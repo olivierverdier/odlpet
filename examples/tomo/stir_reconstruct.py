@@ -42,7 +42,8 @@ base = pth.join(pth.dirname(pth.abspath(__file__)), 'data', 'stir')
 # New ODL domain
 # N.E. At a later point we are going to define a scanner with ring spacing 4.16
 # therefore the z voxel size must be a divisor of that size.
-discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([151, 151, 151], [2.5, 2.5, 2.08])
+discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([71, 71, 103], [5, 5, 2.08])
+odl_phantom = odl.util.shepp_logan(discr_dom_odl, modified=True)
 
 stir_domain = odl.tomo.stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 
@@ -116,14 +117,14 @@ stir_scanner = odl.tomo.stir_get_STIR_geometry(num_rings, num_dets_per_ring,\
 # compression has been used.  It is always an odd number.
 # Higher span, more axial compression.  Span 1 means no axial
 # compression.
-span_num = 1
+span_num = 7
 
 # The segment is an index of the ring difference.
 # In 2D PET there is only one segment = 0
 # In 3D PET segment = 0 refers to direct sinograms
 # The maximum number of segment can be 2*NUM_RINGS - 1
 # Setting the followin variable to -1 implies : maximum possible
-max_num_segments = -1
+max_num_segments = 3
 
 # If the views is less than half the number of detectors defined in
 #  the Scanner then we subsample the scanner angular positions.
@@ -142,35 +143,48 @@ data_arc_corrected = False
 
 
 # Now lets create the proper projector info
-proj_info = odl.tomo.stir_get_projection_data_info(stir_domain,
-                                                   stir_scanner, span_num,
+proj_info = odl.tomo.stir_get_projection_data_info(stir_scanner, span_num,
                                                    max_num_segments, num_of_views,
-                                                   num_non_arccor_bins, data_arc_corrected)
+                                                   num_non_arccor_bins, data_arc_corrected,
+                                                   stir_domain)
 
 #
-#Now lets create the projector data space (range)
+# Now lets create the projector data space (range)
+# or any empty sinogram
 #
 initialize_to_zero = True
-
 proj_data = odl.tomo.stir_get_projection_data(proj_info, initialize_to_zero)
 
+#
+# Let's do something with all this stuff.
+#
+#
 
-proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(discr_dom_odl,\
+#
+# I don't enough time to develope all the transformations, therefore I define the
+# dummies discr_dom and phantom which are ODL objects oriented as STIR need them to be.
+#
+#
+
+# A DiscreteLP domain which has the STIR orientation
+dummy_discr_dom_odl = odl.tomo.stir_get_ODL_domain_from_STIR(stir_domain)
+
+# A sample phantom in the dummy odl domain with STIR orientation
+dummy_odl_phantom = odl.util.shepp_logan(dummy_discr_dom_odl, modified=True)
+
+# Initialize the forward projector
+proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(dummy_discr_dom_odl,\
                                                                   stir_domain,\
-                                                                  proj_data)
+                                                                  proj_data,
+                                                                  proj_info)
 
 
-# A sample phantom in odl domain
-odl_phantom = odl.util.shepp_logan(discr_dom_odl, modified=True)
-
-# A sample phantom to project
-stir_phantom = odl.tomo.stir_get_STIR_image_from_ODL_Vector(discr_dom_odl, odl_phantom)
 
 # Project data
-projections = proj(odl_phantom)
+projections = proj(dummy_odl_phantom)
 
 # Calculate operator norm for landweber
-op_norm_est_squared = proj.adjoint(projections).norm() / odl_phantom.norm()
+op_norm_est_squared = proj.adjoint(projections).norm() / dummy_odl_phantom.norm()
 omega = 0.5 / op_norm_est_squared
 
 # Reconstruct using ODL
