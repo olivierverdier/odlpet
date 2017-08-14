@@ -5,7 +5,6 @@ import odl
 
 standard_library.install_aliases()
 
-import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
 import operator
@@ -19,7 +18,6 @@ from odl.tomo.geometry import (\
 from odl.tomo.util.utility import perpendicular_vector
 from odl.tomo.geometry.pet import CylindricalPetGeom
 
-sys.path.append('/home/stir/python')
 try:
     import stir
     # Fix for stirextra being moved around in various stir versions
