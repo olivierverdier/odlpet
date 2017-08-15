@@ -81,7 +81,7 @@ class ForwardProjectorByBinWrapper(Operator):
     """
 
     def __init__(self, domain, range, volume, proj_data,
-                 _proj_info,
+                 _proj_info=None,
                  projector=None, adjoint=None):
         """Initialize a new instance.
 
@@ -117,8 +117,10 @@ class ForwardProjectorByBinWrapper(Operator):
 
         # Read template of the projection
         self.proj_data = proj_data
-        # self.proj_data_info = proj_data.get_proj_data_info()
-        self.proj_data_info = _proj_info
+        if _proj_info is None:
+            self.proj_data_info = proj_data.get_proj_data_info()
+        else:
+            self.proj_data_info = _proj_info
         self.volume = volume
 
         # Create forward projection by matrix
