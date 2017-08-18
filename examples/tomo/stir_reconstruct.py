@@ -31,7 +31,6 @@ from odl.tomo.backends.stir_bindings import stir_projector_from_memory
 # N.E. At a later point we are going to define a scanner with ring spacing 4.16
 # therefore the z voxel size must be a divisor of that size.
 discr_dom_odl = stir_get_ODL_domain_which_honours_STIR_restrictions([64, 64, 15], [2.05941, 2.05941, 3.125])
-odl_phantom = shepp_logan(discr_dom_odl, modified=True)
 
 stir_domain = stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 
@@ -145,8 +144,6 @@ proj_data = stir_get_projection_data(proj_info, initialize_to_zero)
 # A DiscreteLP domain which has the STIR orientation
 dummy_discr_dom_odl = stir_get_ODL_domain_from_STIR(stir_domain)
 
-# A sample phantom in the dummy odl domain with STIR orientation
-dummy_odl_phantom = shepp_logan(dummy_discr_dom_odl, modified=True)
 
 # Initialize the forward projector
 proj = stir_projector_from_memory(dummy_discr_dom_odl,
@@ -156,6 +153,7 @@ proj = stir_projector_from_memory(dummy_discr_dom_odl,
 
 
 # Create Shepp-Logan phantom
+# odl_phantom = shepp_logan(discr_dom_odl, modified=True)
 vol = shepp_logan(proj.domain, modified=True)
 
 # Project data. Note that this delegates computations to STIR.
