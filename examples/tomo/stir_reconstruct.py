@@ -59,9 +59,9 @@ intrinsic_tilt = 0.0
 
 # Create a PET geometry (ODL object) which is similar
 # to the one that STIR will create using these values
-geom = odl.tomo.stir_get_ODL_geometry_which_honours_STIR_restrictions(det_nx_mm, det_ny_mm,
-                                                                      num_rings, num_dets_per_ring,
-                                                                      det_radius)
+# geom = odl.tomo.stir_get_ODL_geometry_which_honours_STIR_restrictions(det_nx_mm, det_ny_mm,
+#                                                                       num_rings, num_dets_per_ring,
+#                                                                       det_radius)
 
 # Now create the STIR geometry
 stir_scanner = odl.tomo.stir_get_STIR_geometry(num_rings, num_dets_per_ring,
