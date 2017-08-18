@@ -10,7 +10,16 @@ Note that running this example requires an installation of
 `STIR <http://stir.sourceforge.net/>`_ and its Python bindings.
 """
 
-import odl
+from odl.phantom import shepp_logan
+from odl.solvers import landweber
+from odl.tomo.backends.stir_setup import (
+    stir_get_ODL_domain_which_honours_STIR_restrictions,
+    stir_get_STIR_domain_from_ODL,
+    stir_get_STIR_geometry,
+    stir_get_projection_data_info,
+    stir_get_projection_data,
+    stir_get_ODL_domain_from_STIR)
+from odl.tomo.backends.stir_bindings import stir_projector_from_memory
 
 # Temporal edit to account for the stuff.
 
@@ -21,10 +30,10 @@ import odl
 # New ODL domain
 # N.E. At a later point we are going to define a scanner with ring spacing 4.16
 # therefore the z voxel size must be a divisor of that size.
-discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([64, 64, 15], [2.05941, 2.05941, 3.125])
-odl_phantom = odl.phantom.shepp_logan(discr_dom_odl, modified=True)
+discr_dom_odl = stir_get_ODL_domain_which_honours_STIR_restrictions([64, 64, 15], [2.05941, 2.05941, 3.125])
+odl_phantom = shepp_logan(discr_dom_odl, modified=True)
 
-stir_domain = odl.tomo.stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
+stir_domain = stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 
 # Instead of calling a hs file we are going to initialise a projector, based on a scanner,
 
@@ -64,7 +73,7 @@ intrinsic_tilt = 0.0
 #                                                                       det_radius)
 
 # Now create the STIR geometry
-stir_scanner = odl.tomo.stir_get_STIR_geometry(num_rings, num_dets_per_ring,
+stir_scanner = stir_get_STIR_geometry(num_rings, num_dets_per_ring,
                                                det_radius, ring_spacing,
                                                average_depth_of_inter,
                                                voxel_size_xy,
@@ -110,7 +119,7 @@ data_arc_corrected = False
 
 
 # Now lets create the proper projector info
-proj_info = odl.tomo.stir_get_projection_data_info(stir_scanner, span_num,
+proj_info = stir_get_projection_data_info(stir_scanner, span_num,
                                                    max_num_segments, num_of_views,
                                                    num_non_arccor_bins, data_arc_corrected,
                                                    stir_domain)
@@ -120,7 +129,7 @@ proj_info = odl.tomo.stir_get_projection_data_info(stir_scanner, span_num,
 # or any empty sinogram
 #
 initialize_to_zero = True
-proj_data = odl.tomo.stir_get_projection_data(proj_info, initialize_to_zero)
+proj_data = stir_get_projection_data(proj_info, initialize_to_zero)
 
 #
 # Let's do something with all this stuff.
@@ -134,20 +143,20 @@ proj_data = odl.tomo.stir_get_projection_data(proj_info, initialize_to_zero)
 #
 
 # A DiscreteLP domain which has the STIR orientation
-dummy_discr_dom_odl = odl.tomo.stir_get_ODL_domain_from_STIR(stir_domain)
+dummy_discr_dom_odl = stir_get_ODL_domain_from_STIR(stir_domain)
 
 # A sample phantom in the dummy odl domain with STIR orientation
-dummy_odl_phantom = odl.phantom.shepp_logan(dummy_discr_dom_odl, modified=True)
+dummy_odl_phantom = shepp_logan(dummy_discr_dom_odl, modified=True)
 
 # Initialize the forward projector
-proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(dummy_discr_dom_odl,
+proj = stir_projector_from_memory(dummy_discr_dom_odl,
                                                                   stir_domain,
                                                                   proj_data,
                                                                   proj_info)
 
 
 # Create Shepp-Logan phantom
-vol = odl.phantom.shepp_logan(proj.domain, modified=True)
+vol = shepp_logan(proj.domain, modified=True)
 
 # Project data. Note that this delegates computations to STIR.
 projections = proj(vol)
@@ -158,5 +167,5 @@ omega = 0.5 / op_norm_est_squared
 
 # Reconstruct using the STIR forward projector in the ODL reconstruction scheme
 recon = proj.domain.zero()
-odl.solvers.landweber(proj, recon, projections, niter=50, omega=omega)
+landweber(proj, recon, projections, niter=50, omega=omega)
 recon.show()
