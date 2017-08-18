@@ -10,8 +10,6 @@ Note that running this example requires an installation of
 `STIR <http://stir.sourceforge.net/>`_ and its Python bindings.
 """
 
-from odl.phantom import shepp_logan
-from odl.solvers import landweber
 from odl.tomo.backends.stir_setup import (
     stir_get_ODL_domain_which_honours_STIR_restrictions,
     stir_get_STIR_domain_from_ODL,
@@ -153,17 +151,22 @@ proj = stir_projector_from_memory(dummy_discr_dom_odl,
 
 
 # Create Shepp-Logan phantom
+from odl.phantom import shepp_logan
+
 # odl_phantom = shepp_logan(discr_dom_odl, modified=True)
 vol = shepp_logan(proj.domain, modified=True)
 
 # Project data. Note that this delegates computations to STIR.
 projections = proj(vol)
 
+# Reconstruct using the STIR forward projector in the ODL reconstruction scheme
+
+from odl.solvers import landweber
+
 # Calculate operator norm required for Landweber's method
 op_norm_est_squared = proj.adjoint(projections).norm() / vol.norm()
 omega = 0.5 / op_norm_est_squared
 
-# Reconstruct using the STIR forward projector in the ODL reconstruction scheme
 recon = proj.domain.zero()
 landweber(proj, recon, projections, niter=50, omega=omega)
 recon.show()
