@@ -12,8 +12,8 @@ import operator
 from odl.util.graphics import show_discrete_data
 
 from odl.discr.lp_discr import DiscreteLp, DiscreteLpElement
-from odl.tomo.geometry import (\
-    Geometry, Parallel2dGeometry, DivergentBeamGeometry, ParallelBeamGeometry,\
+from odl.tomo.geometry import (
+    Geometry, Parallel2dGeometry, DivergentBeamGeometry, ParallelBeamGeometry,
     FlatDetector, Flat2dDetector)
 from odl.tomo.util.utility import perpendicular_vector
 from odl.tomo.geometry.pet import CylindricalPetGeom
@@ -31,20 +31,20 @@ except ImportError:
     STIR_AVAILABLE = False
 
 __all__ = ('STIR_AVAILABLE',
-           'stir_get_projection_data_info',\
-           'stir_get_projection_data',\
-           'stir_operate_STIR_and_ODL_vectors',\
+           'stir_get_projection_data_info',
+           'stir_get_projection_data',
+           'stir_operate_STIR_and_ODL_vectors',
            'stir_get_ODL_domain_which_honours_STIR_restrictions',
-           'stir_get_ODL_geometry_which_honours_STIR_restrictions',\
-           'stir_get_STIR_geometry',\
-           'stir_get_STIR_domain_from_ODL',\
-           'stir_get_ODL_domain_from_STIR',\
-           'stir_get_STIR_image_from_ODL_Vector',\
-           'stir_get_STIR_data_as_array',\
-           'stir_get_domain_from_Proj_info',\
-           'stir_unified_display_function',\
-           'stir_transform_array_to_STIR_orientation',\
-           'stir_transform_array_to_STIR_orientation_reverse',\
+           'stir_get_ODL_geometry_which_honours_STIR_restrictions',
+           'stir_get_STIR_geometry',
+           'stir_get_STIR_domain_from_ODL',
+           'stir_get_ODL_domain_from_STIR',
+           'stir_get_STIR_image_from_ODL_Vector',
+           'stir_get_STIR_data_as_array',
+           'stir_get_domain_from_Proj_info',
+           'stir_unified_display_function',
+           'stir_transform_array_to_STIR_orientation',
+           'stir_transform_array_to_STIR_orientation_reverse',
            'stir_get_discretized_image_from_Cartesian_voxels')
 
 #
@@ -148,8 +148,8 @@ def stir_get_ODL_domain_from_STIR_domain(_stir_domain):
             dtype='float32')
 
 
-def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z_size_mm,\
-                                                           _num_rings, _num_dets_per_ring,\
+def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z_size_mm,
+                                                           _num_rings, _num_dets_per_ring,
                                                            _det_radius):
     """
     This function will return a CylindricalPETGeom which will match with a
@@ -183,8 +183,8 @@ def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z
     last_tmpl_det_point = [_det_y_size_mm/2, _det_z_size_mm/2]
 
     # Template of detectors
-    tmpl_det = odl.uniform_partition(first_tmpl_det_point,\
-                                         last_tmpl_det_point,\
+    tmpl_det = odl.uniform_partition(first_tmpl_det_point,
+                                         last_tmpl_det_point,
                                          [1, 1])
 
     # Perpendicular vector from the ring center to
@@ -248,8 +248,8 @@ def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
         raise TypeError('Something is wrong in the scanner geometry.')
 
 
-def stir_get_projection_data_info(_stir_scanner, _span_num,\
-                                  _max_num_segments, _num_of_views,\
+def stir_get_projection_data_info(_stir_scanner, _span_num,
+                                  _max_num_segments, _num_of_views,
                                   _num_non_arccor_bins, _data_arc_corrected,
                                   _domain=0):
     """
@@ -293,8 +293,8 @@ def stir_get_projection_data_info(_stir_scanner, _span_num,\
     else:
         num_bins = np.int32(_stir_scanner.get_max_num_non_arccorrected_bins())
 
-    return stir.ProjDataInfo.ProjDataInfoCTI(_stir_scanner, span_num,\
-                                             max_ring_diff, num_of_views,\
+    return stir.ProjDataInfo.ProjDataInfoCTI(_stir_scanner, span_num,
+                                             max_ring_diff, num_of_views,
                                              num_bins, _data_arc_corrected)
 
 
@@ -435,8 +435,7 @@ def stir_operate_STIR_and_ODL_vectors(_stir_data, _odl_data, _operator):
     -------
 
     """
-    if not isinstance( _odl_data, DiscreteLpElement) or not\
-            isinstance( _stir_data, stir.FloatVoxelsOnCartesianGrid):
+    if not isinstance( _odl_data, DiscreteLpElement) or not isinstance( _stir_data, stir.FloatVoxelsOnCartesianGrid):
             raise TypeError('The first input should be the STIR data'
                             'and the second value should be ODL Vector')
 
@@ -592,8 +591,7 @@ def get_volume_geometry(discr_reco):
     min_point = discr_reco.partition.min_pt
     max_point = discr_reco.partition.max_pt
 
-    return np.asarray(vol_shp, dtype=np.int32), np.asarray(voxel_size, dtype=np.float32),\
-                        np.asarray(min_point, dtype=np.float32), np.asarray(max_point, dtype=np.float32)
+    return np.asarray(vol_shp, dtype=np.int32), np.asarray(voxel_size, dtype=np.float32), np.asarray(min_point, dtype=np.float32), np.asarray(max_point, dtype=np.float32)
 
 
 

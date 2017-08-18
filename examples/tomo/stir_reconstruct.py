@@ -71,18 +71,18 @@ intrinsic_tilt = 0.0
 
 # Create a PET geometry (ODL object) which is similar
 # to the one that STIR will create using these values
-geom = odl.tomo.stir_get_ODL_geometry_which_honours_STIR_restrictions(det_nx_mm, det_ny_mm,\
-                                                                      num_rings, num_dets_per_ring,\
+geom = odl.tomo.stir_get_ODL_geometry_which_honours_STIR_restrictions(det_nx_mm, det_ny_mm,
+                                                                      num_rings, num_dets_per_ring,
                                                                       det_radius)
 
 # Now create the STIR geometry
-stir_scanner = odl.tomo.stir_get_STIR_geometry(num_rings, num_dets_per_ring,\
-                                               det_radius, ring_spacing,\
-                                               average_depth_of_inter,\
-                                               voxel_size_xy,\
-                                               axial_crystals_per_block, trans_crystals_per_block,\
-                                               axials_blocks_per_bucket, trans_blocks_per_bucket,\
-                                               axial_crystals_per_singles_unit, trans_crystals_per_singles_unit,\
+stir_scanner = odl.tomo.stir_get_STIR_geometry(num_rings, num_dets_per_ring,
+                                               det_radius, ring_spacing,
+                                               average_depth_of_inter,
+                                               voxel_size_xy,
+                                               axial_crystals_per_block, trans_crystals_per_block,
+                                               axials_blocks_per_bucket, trans_blocks_per_bucket,
+                                               axial_crystals_per_singles_unit, trans_crystals_per_singles_unit,
                                                num_detector_layers, intrinsic_tilt)
 
 
@@ -159,8 +159,8 @@ dummy_discr_dom_odl = odl.tomo.stir_get_ODL_domain_from_STIR(stir_domain)
 dummy_odl_phantom = odl.phantom.shepp_logan(dummy_discr_dom_odl, modified=True)
 
 # Initialize the forward projector
-proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(dummy_discr_dom_odl,\
-                                                                  stir_domain,\
+proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(dummy_discr_dom_odl,
+                                                                  stir_domain,
                                                                   proj_data,
                                                                   proj_info)
 

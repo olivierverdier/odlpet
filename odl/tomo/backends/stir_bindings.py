@@ -318,9 +318,9 @@ def stir_projector_from_file(volume_file, projection_file):
     return ForwardProjectorByBinWrapper(recon_sp, data_sp, volume, proj_data)
 
 
-def stir_projector_from_memory(_recon_sp,\
-                               _volume,\
-                               _proj_data,\
+def stir_projector_from_memory(_recon_sp,
+                               _volume,
+                               _proj_data,
                                _proj_info):
     """
 
