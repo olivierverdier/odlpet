@@ -46,7 +46,6 @@ except ImportError:
 
 from odl.discr import uniform_discr
 from odl.operator import Operator
-from odl.tomo.backends import stir_setup
 
 import numpy as np
 

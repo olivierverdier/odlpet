@@ -7,14 +7,11 @@ standard_library.install_aliases()
 
 import numpy as np
 import matplotlib.pyplot as plt
-import operator
 
 from odl.util.graphics import show_discrete_data
 
 from odl.discr.lp_discr import DiscreteLp, DiscreteLpElement
-from odl.tomo.geometry import (
-    Geometry, Parallel2dGeometry, DivergentBeamGeometry, ParallelBeamGeometry,
-    FlatDetector, Flat2dDetector)
+from odl.tomo.geometry import Flat2dDetector
 from odl.tomo.util.utility import perpendicular_vector
 from odl.tomo.geometry.pet import CylindricalPetGeom
 
@@ -203,7 +200,7 @@ def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z
     # The middle of the first ring should be on (r,r,0.0)
     axialpart = odl.uniform_partition(0, _num_rings*_det_z_size_mm, _num_rings)
 
-    return odl.tomo.geometry.pet.CylindricalPetGeom(_det_radius,
+    return CylindricalPetGeom(_det_radius,
                                                 ring_center_to_tmpl_det,
                                                 apart,
                                                 detector,
