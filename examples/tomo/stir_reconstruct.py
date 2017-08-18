@@ -10,18 +10,11 @@ Note that running this example requires an installation of
 `STIR <http://stir.sourceforge.net/>`_ and its Python bindings.
 """
 
-from os import path
 import odl
 
 # Temporal edit to account for the stuff.
 
-# Set path to input files
-base = path.join(path.dirname(path.abspath(__file__)), 'data', 'stir')
-volume_file = str(path.join(base, 'initial.hv'))
-projection_file = str(path.join(base, 'small.hs'))
 
-# volume_file = str(pth.join(base, 'initial.hv'))
-#
 # N.E. Replace the call to this function by creating a new ODL space and
 # transform it to STIR domain.
 #
@@ -33,11 +26,6 @@ odl_phantom = odl.phantom.shepp_logan(discr_dom_odl, modified=True)
 
 stir_domain = odl.tomo.stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 
-#
-#
-# Now, let us create a ODL geometry and made a Scanner, and ProjData out of it.
-#projection_file = str(pth.join(base, 'small.hs'))
-#
 # Instead of calling a hs file we are going to initialise a projector, based on a scanner,
 
 #
@@ -87,14 +75,7 @@ stir_scanner = odl.tomo.stir_get_STIR_geometry(num_rings, num_dets_per_ring,
 
 
 
-## Create a STIR projector from file data.
-#proj = odl.tomo.backends.stir_bindings.stir_projector_from_file(
-#    volume_file, projection_file)
-
-#
-#
 # Parameters usefull to the projector setup
-#
 
 # Axial compression (Span)
 # Reduction of the number of sinograms at different ring dierences
