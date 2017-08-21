@@ -112,7 +112,7 @@ class ForwardProjectorByBinWrapper(Operator):
                              ''.format(range.shape, proj_shape))
 
         # Set domain, range etc
-        super().__init__(domain, range, True)
+        super().__init__(domain, range, linear=True)
 
         # Read template of the projection
         self.proj_data = proj_data
