@@ -17,7 +17,9 @@ pytestmark = pytest.mark.skipif("not odl.tomo.STIR_AVAILABLE")
 
 
 def test_vol_geom_3d():
-    """ Create STIR 3D volume."""
+    """ Create STIR 3D volume.
+    Create a ODL domain (with restrictions) : Trasform it to STIR : Reverse transform back to ODL and match.
+    """
 
     # Create a domain compatible to STIR
     discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([151, 151, 100], [2.5, 2.5, 1])
@@ -37,11 +39,9 @@ def test_vector_transfer(_display = False):
     Several things are going to be tested here:
     . Add ot multiply of a vector from ODL to STIR
     . Compare the two copies
-    . Print functions
-    Returns
-    -------
-    True or False
 
+    The test goes like this:
+    Create a ODL vector : Trasform it to STIR : Reverse transform back to ODL and match.
     """
     # Create a domain compatible to STIR
     discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([151, 151, 151], [2.5, 2.5, 2.5])
@@ -66,10 +66,4 @@ def test_vector_transfer(_display = False):
     if _display: # Display intermediate array
         fig3 = odl.tomo.stir_unified_display_function(stir_phantom_array[70,:,:],odl_phantom, _title="STIR phantom")
 
-    return True
 
-if __name__ == '__main__':
-    # pytest.main(str(__file__.replace('\\', '/')) + ' -v')
-    print("1. Create a ODL domain (with restrictions) : Trasform it to STIR : Reverse transform back to ODL and match. -> ", test_vol_geom_3d())
-    print("\n")
-    print("2. Create a ODL vector : Trasform it to STIR : Reverse transform back to ODL and match. -> ", test_vector_transfer(_display=True))
