@@ -436,17 +436,14 @@ def stir_operate_STIR_and_ODL_vectors(_stir_data, _odl_data, _operator):
             raise TypeError('The first input should be the STIR data'
                             'and the second value should be ODL Vector')
 
-    stir_ind = _stir_data.get_max_indices()
-    stir_max_ind = (stir_ind[1]+1, stir_ind[2]+1, stir_ind[3]+1)
+    stir_min_ind = _stir_data.get_min_indices()
+    stir_max_ind = _stir_data.get_max_indices()
 
     odl_array = _odl_data.asarray().astype(np.float32)
     trans_phantom_array = stir_transform_array_to_STIR_orientation(odl_array)
 
     odl_max_ind = trans_phantom_array.shape
 
-    if not stir_max_ind == odl_max_ind:
-        raise ValueError('The arrays must have the same dimentions! stir array:{}, odl array{}'
-                             .format(stir_max_ind, odl_max_ind))
 
     stir_array = stirextra.to_numpy(_stir_data)
 
@@ -455,9 +452,9 @@ def stir_operate_STIR_and_ODL_vectors(_stir_data, _odl_data, _operator):
     elif _operator is '*':
         res = np.multiply(stir_array, trans_phantom_array)
 
-    for i in range(0, odl_max_ind[0],1):
-        for j in range(0, odl_max_ind[1],1):
-            for k in range(0, odl_max_ind[2], 1):
+    for i in range(stir_min_ind[1], stir_max_ind[1]):
+        for j in range(stir_min_ind[2], stir_max_ind[2]):
+            for k in range(stir_min_ind[3], stir_max_ind[3]):
                 _stir_data[i, j, k] = res[i,j,k]
 
 def stir_get_STIR_data_as_array(_stir_data):
