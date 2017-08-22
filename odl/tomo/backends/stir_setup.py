@@ -452,10 +452,8 @@ def stir_operate_STIR_and_ODL_vectors(_stir_data, _odl_data, _operator):
     elif _operator is '*':
         res = np.multiply(stir_array, trans_phantom_array)
 
-    for i in range(stir_min_ind[1], stir_max_ind[1]):
-        for j in range(stir_min_ind[2], stir_max_ind[2]):
-            for k in range(stir_min_ind[3], stir_max_ind[3]):
-                _stir_data[i, j, k] = res[i,j,k]
+    _stir_data.fill(res.flat)
+
 
 def stir_get_STIR_data_as_array(_stir_data):
     """

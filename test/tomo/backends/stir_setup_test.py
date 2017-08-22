@@ -34,8 +34,7 @@ def test_vol_geom_3d():
     assert odl.util.testutils.all_almost_equal(discr_dom_odl, new_discr_dom_odl)
 
 
-@pytest.mark.skip("Discrepancy between stir and odl arrays")
-def test_vector_transfer(_display = False):
+def test_vector_transfer(_display=False):
     """
     Test if the interface handles vectors correctly.
     Several things are going to be tested here:
@@ -56,18 +55,22 @@ def test_vector_transfer(_display = False):
 
     odl_phantom_array = odl_phantom.asarray()
 
+    odl_slice = odl_phantom_array[:,:,70]
+
     # Display starting array
     if _display:
-        fig1 = odl.tomo.stir_unified_display_function(odl_phantom_array[:,:,70], odl_phantom, _title="Initial ODL phantom")
+        fig1 = odl.tomo.stir_unified_display_function(odl_slice, odl_phantom, _title="Initial ODL phantom")
 
     # Operate ODL data on STIR data
     odl.tomo.stir_operate_STIR_and_ODL_vectors(stir_phantom, odl_phantom, '+')
 
     stir_phantom_array = odl.tomo.stir_get_STIR_data_as_array(stir_phantom)
 
-    if _display: # Display intermediate array
-        fig3 = odl.tomo.stir_unified_display_function(stir_phantom_array[70,:,:],odl_phantom, _title="STIR phantom")
+    stir_slice = stir_phantom_array[70,:,:].T
 
-    assert odl.util.testutils.all_almost_equal(odl_phantom_array[:,:,70], stir_phantom_array[70,:,:])
+    if _display: # Display intermediate array
+        fig3 = odl.tomo.stir_unified_display_function(stir_slice, odl_phantom, _title="STIR phantom")
+
+    assert odl.util.testutils.all_almost_equal(odl_slice, stir_slice)
 
 
