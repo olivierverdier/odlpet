@@ -13,7 +13,7 @@ from odl.tomo.backends.stir_setup import STIR_AVAILABLE
 import odl
 from odl.util.testutils import is_subdict
 
-pytestmark = pytest.mark.skipif("not odl.tomo.STIR_AVAILABLE")
+pytestmark = pytest.mark.skipif(not odl.tomo.STIR_AVAILABLE, reason="stir not available")
 
 @pytest.mark.skip("Fails for some reason")
 def test_vol_geom_3d():
