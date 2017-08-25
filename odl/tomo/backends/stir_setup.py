@@ -120,29 +120,7 @@ def stir_get_ODL_domain_which_honours_STIR_restrictions(_vox_num, _vox_size):
             min_pt=min_p, max_pt=max_p, shape= _vox_num,
             dtype='float32')
 
-def stir_get_ODL_domain_from_STIR_domain(_stir_domain):
-    """
-    In the future a geometry should be imported to handle scanner alignment restrictions.
-    Returns
-    -------
 
-    .. warning:: STIR coordinates are currently related to the scanner, i.e. not to the patient (as in DICOM).
-        For an image with zero offset, the origin is assumed to coincide with the centre of the first plane.
-        I strongly suggest for the time being to let the origin default to (0,0,0) as STIR regards it.
-
-
-    """
-
-    range = [a*b for a,b in zip(_vox_num,_vox_size)]
-    min_p = [-x / 2 for x in range]
-    max_p = [a+b for a,b in zip(min_p,range)]
-
-    min_p[2] = 0.0
-    max_p[2] = range[2]
-
-    return odl.uniform_discr(
-            min_corner=min_p, max_corner=max_p, nsamples= _vox_num,
-            dtype='float32')
 
 
 def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z_size_mm,
