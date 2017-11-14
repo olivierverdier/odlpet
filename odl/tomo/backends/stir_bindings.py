@@ -294,6 +294,7 @@ def stir_projector_from_file(volume_file, projection_file):
     proj_data = stir.ProjDataInMemory(proj_data_in.get_exam_info(),
                                       proj_data_in.get_proj_data_info())
 
+    # TODO: use stirextra.tonumpy instead?!?
     origin = volume.get_origin()
     grid_spacing = volume.get_grid_spacing()
     grid_shape = [volume.get_z_size(),
