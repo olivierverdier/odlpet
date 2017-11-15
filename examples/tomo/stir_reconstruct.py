@@ -1,38 +1,24 @@
-# Copyright 2014-2016 The ODL development group
-#
-# This file is part of ODL.
-#
-# ODL is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# ODL is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ODL.  If not, see <http://www.gnu.org/licenses/>.
+"""Example PET reconstruction using STIR.
 
-"""Example reconstruction with stir.
-In a fashion that would be performed by an ODL user.
-Please have a look at the stir_reconstruction_2 for a more
-STIR-like approach. """
+This example computes projections from the ODL Shepp-Logan phantom
+and uses them as input data for reconstruction in STIR. Definition
+of the acquisition geometry and computations are done entirely in STIR,
+where the communication between ODL and STIR is realized with files
+via hard disk.
 
-# Imports for common Python 2/3 codebase
-from __future__ import print_function, division, absolute_import
-from future import standard_library
-standard_library.install_aliases()
+Note that running this example requires an installation of
+`STIR <http://stir.sourceforge.net/>`_ and its Python bindings.
+"""
 
-
-import os.path as pth
+from os import path
 import odl
 
 # Temporal edit to account for the stuff.
 
 # Set path to input files
-base = pth.join(pth.dirname(pth.abspath(__file__)), 'data', 'stir')
+base = path.join(path.dirname(path.abspath(__file__)), 'data', 'stir')
+volume_file = str(path.join(base, 'initial.hv'))
+projection_file = str(path.join(base, 'small.hs'))
 
 # volume_file = str(pth.join(base, 'initial.hv'))
 #
@@ -43,7 +29,7 @@ base = pth.join(pth.dirname(pth.abspath(__file__)), 'data', 'stir')
 # N.E. At a later point we are going to define a scanner with ring spacing 4.16
 # therefore the z voxel size must be a divisor of that size.
 discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([64, 64, 15], [2.05941, 2.05941, 3.125])
-odl_phantom = odl.util.shepp_logan(discr_dom_odl, modified=True)
+odl_phantom = odl.phantom.shepp_logan(discr_dom_odl, modified=True)
 
 stir_domain = odl.tomo.stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 
@@ -170,7 +156,7 @@ proj_data = odl.tomo.stir_get_projection_data(proj_info, initialize_to_zero)
 dummy_discr_dom_odl = odl.tomo.stir_get_ODL_domain_from_STIR(stir_domain)
 
 # A sample phantom in the dummy odl domain with STIR orientation
-dummy_odl_phantom = odl.util.shepp_logan(dummy_discr_dom_odl, modified=True)
+dummy_odl_phantom = odl.phantom.shepp_logan(dummy_discr_dom_odl, modified=True)
 
 # Initialize the forward projector
 proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(dummy_discr_dom_odl,\
@@ -179,15 +165,17 @@ proj = odl.tomo.backends.stir_bindings.stir_projector_from_memory(dummy_discr_do
                                                                   proj_info)
 
 
+# Create Shepp-Logan phantom
+vol = odl.phantom.shepp_logan(proj.domain, modified=True)
 
-# Project data
-projections = proj(dummy_odl_phantom)
+# Project data. Note that this delegates computations to STIR.
+projections = proj(vol)
 
-# Calculate operator norm for landweber
-op_norm_est_squared = proj.adjoint(projections).norm() / dummy_odl_phantom.norm()
+# Calculate operator norm required for Landweber's method
+op_norm_est_squared = proj.adjoint(projections).norm() / vol.norm()
 omega = 0.5 / op_norm_est_squared
 
-# Reconstruct using ODL
+# Reconstruct using the STIR forward projector in the ODL reconstruction scheme
 recon = proj.domain.zero()
 odl.solvers.landweber(proj, recon, projections, niter=50, omega=omega)
 recon.show()

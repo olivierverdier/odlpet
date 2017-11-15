@@ -1,20 +1,10 @@
-# Copyright 2014-2016 The ODL development group
+# Copyright 2014-2017 The ODL contributors
 #
 # This file is part of ODL.
 #
-# ODL is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# ODL is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with ODL.  If not, see <http://www.gnu.org/licenses/>.
-
+# This Source Code Form is subject to the terms of the Mozilla Public License,
+# v. 2.0. If a copy of the MPL was not distributed with this file, You can
+# obtain one at https://mozilla.org/MPL/2.0/.
 
 """Back-end for STIR: Software for Tomographic Reconstruction.
 
@@ -56,8 +46,8 @@ try:
 except ImportError:
     STIR_AVAILABLE = False
 
-from odl.discr.lp_discr import uniform_discr
-from odl.operator.operator import Operator
+from odl.discr import uniform_discr
+from odl.operator import Operator
 from odl.tomo.backends import stir_setup
 
 import numpy as np
@@ -92,40 +82,40 @@ class ForwardProjectorByBinWrapper(Operator):
     Uses "ForwardProjectorByBinUsingProjMatrixByBin" as a projector.
     """
 
-    def __init__(self, dom, ran, volume, proj_data,
+    def __init__(self, domain, range, volume, proj_data,
                  _proj_info,
                  projector=None, adjoint=None):
         """Initialize a new instance.
 
         Parameters
         ----------
-        dom : `DiscreteLp`
+        domain : `DiscreteLp`
             Volume of the projection. Needs to have the same shape as
             ``volume.shape()``.
-        ran : `DiscreteLp`
+        range : `DiscreteLp`
             Projection space. Needs to have the same shape as
             ``proj_data.to_array().shape()``.
         volume : ``stir.FloatVoxelsOnCartesianGrid``
-            The stir volume to use in the forward projection
+            Stir volume to use in the forward projection
         proj_data : ``stir.ProjData``
-            The stir description of the projection.
+            Stir description of the projection.
         projector : ``stir.ForwardProjectorByBin``, optional
             A pre-initialized projector.
         adjoint : `BackProjectorByBinWrapper`, optional
             A pre-initialized adjoint.
         """
         # Check data sizes
-        if dom.shape != volume.shape():
-            raise ValueError('dom.shape {} does not equal volume shape {}'
-                             ''.format(dom.shape, volume.shape()))
+        if domain.shape != volume.shape():
+            raise ValueError('domain.shape {} does not equal volume shape {}'
+                             ''.format(domain.shape, volume.shape()))
         # TODO: improve
         proj_shape = proj_data.to_array().shape()
-        if ran.shape != proj_shape:
-            raise ValueError('ran.shape {} does not equal proj shape {}'
-                             ''.format(ran.shape, proj_shape))
+        if range.shape != proj_shape:
+            raise ValueError('range.shape {} does not equal proj shape {}'
+                             ''.format(range.shape, proj_shape))
 
         # Set domain, range etc
-        super().__init__(dom, ran, True)
+        super().__init__(domain, range, True)
 
         # Read template of the projection
         self.proj_data = proj_data
@@ -179,12 +169,12 @@ class ForwardProjectorByBinWrapper(Operator):
         with StirVerbosity(1):
             self.projector.forward_project(self.proj_data, self.volume)
 
-        # make odl data
+        # make ODL data
         out[:] = stirextra.to_numpy(self.proj_data)
 
     @property
     def adjoint(self):
-        """The back-projector associated with this operator."""
+        """Back-projector associated with this operator."""
         return self._adjoint
 
 
@@ -192,22 +182,22 @@ class BackProjectorByBinWrapper(Operator):
 
     """A back projector using STIR."""
 
-    def __init__(self, dom, ran, volume, proj_data,
+    def __init__(self, domain, range, volume, proj_data,
                  back_projector=None, adjoint=None):
         """Initialize a new instance.
 
         Parameters
         ----------
-        dom : `DiscreteLp`
+        domain : `DiscreteLp`
             Projection space. Needs to have the same shape as
             ``proj_data.to_array().shape()``.
-        ran : `DiscreteLp`
+        range : `DiscreteLp`
             Volume of the projection. Needs to have the same shape as
             ``volume.shape()``.
         volume : ``stir.FloatVoxelsOnCartesianGrid``
-            The stir volume to use in the forward projection
+            Stir volume to use in the forward projection
         proj_data : ``stir.ProjData``
-            The stir description of the projection.
+            Stir description of the projection.
         back_projector : ``stir.BackProjectorByBin``, optional
             A pre-initialized back-projector.
         adjoint : `ForwardProjectorByBinWrapper`, optional
@@ -223,17 +213,17 @@ class BackProjectorByBinWrapper(Operator):
         """
 
         # Check data sizes
-        if ran.shape != volume.shape():
-            raise ValueError('ran.shape {} does not equal volume shape {}'
-                             ''.format(ran.shape, volume.shape()))
+        if range.shape != volume.shape():
+            raise ValueError('`range.shape` {} does not equal volume shape {}'
+                             ''.format(range.shape, volume.shape()))
         # TODO: improve
         proj_shape = proj_data.to_array().shape()
-        if dom.shape != proj_shape:
-            raise ValueError('dom.shape {} does not equal proj shape {}'
-                             ''.format(ran.shape, proj_shape))
+        if domain.shape != proj_shape:
+            raise ValueError('`domain.shape` {} does not equal proj shape {}'
+                             ''.format(range.shape, proj_shape))
 
         # Set range domain
-        super().__init__(dom, ran, True)
+        super().__init__(domain, range, True)
 
         # Read template of the projection
         self.proj_data = proj_data
@@ -275,7 +265,7 @@ class BackProjectorByBinWrapper(Operator):
         with StirVerbosity(1):
             self.back_projector.back_project(self.volume, self.proj_data)
 
-        # make odl data
+        # make ODL data
         out[:] = stirextra.to_numpy(self.volume)
 
 
@@ -285,11 +275,11 @@ def stir_projector_from_file(volume_file, projection_file):
 
     Parameters
     ----------
-    volume_file : `str`
+    volume_file : string
         Full file path to the STIR input file containing information on the
         volume. This is usually a '.hv' file. For STIR reasons,
         a '.v' file is also needed.
-    projection_file : `str`
+    projection_file : string
         Full file path to the STIR input file with information on the
         projection data. This is usually a '.hs' file. For STIR reasons,
         a '.s' file is also needed.
@@ -310,14 +300,14 @@ def stir_projector_from_file(volume_file, projection_file):
     grid_shape = [volume.get_z_size(),
                   volume.get_y_size(),
                   volume.get_x_size()]
-    min_corner = [origin[1], origin[2], origin[3]]
-    max_corner = [origin[1] + grid_spacing[1] * grid_shape[0],
-                  origin[2] + grid_spacing[2] * grid_shape[1],
-                  origin[3] + grid_spacing[3] * grid_shape[2]]
+    min_pt = [origin[1], origin[2], origin[3]]
+    max_pt = [origin[1] + grid_spacing[1] * grid_shape[0],
+              origin[2] + grid_spacing[2] * grid_shape[1],
+              origin[3] + grid_spacing[3] * grid_shape[2]]
 
     # reverse to handle STIR bug? See:
     # https://github.com/UCL/STIR/issues/7
-    recon_sp = uniform_discr(min_corner, max_corner, grid_shape,
+    recon_sp = uniform_discr(min_pt, max_pt, grid_shape,
                              dtype='float32')
 
     # TODO: set correct projection space. Currently, a default grid with

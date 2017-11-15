@@ -48,7 +48,7 @@ def test_vector_transfer(_display = False):
     discr_dom_odl = odl.tomo.stir_get_ODL_domain_which_honours_STIR_restrictions([151, 151, 151], [2.5, 2.5, 2.5])
 
     # A sample phantom in odl domain
-    odl_phantom = odl.util.shepp_logan(discr_dom_odl, modified=True)
+    odl_phantom = odl.phantom.shepp_logan(discr_dom_odl, modified=True)
 
     # Create an empty STIR phantom based on the ODL domain
     stir_phantom = odl.tomo.stir_get_STIR_domain_from_ODL(discr_dom_odl)

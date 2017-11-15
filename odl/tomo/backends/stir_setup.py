@@ -11,12 +11,10 @@ import matplotlib.pyplot as plt
 import operator
 
 from odl.util.graphics import show_discrete_data
-from odl.discr.grid import RegularGrid
 
-from odl.discr.lp_discr import DiscreteLp, DiscreteLpVector
-from odl.space.ntuples import FnVector
+from odl.discr.lp_discr import DiscreteLp, DiscreteLpElement
 from odl.tomo.geometry import (\
-    Geometry, Parallel2dGeometry, DivergentBeamGeometry, ParallelGeometry,\
+    Geometry, Parallel2dGeometry, DivergentBeamGeometry, ParallelBeamGeometry,\
     FlatDetector, Flat2dDetector)
 from odl.tomo.util.utility import perpendicular_vector
 from odl.tomo.geometry.pet import CylindricalPetGeom
@@ -124,7 +122,7 @@ def stir_get_ODL_domain_which_honours_STIR_restrictions(_vox_num, _vox_size):
     max_p[2] = range[2]
 
     return odl.uniform_discr(
-            min_corner=min_p, max_corner=max_p, nsamples= _vox_num,
+            min_pt=min_p, max_pt=max_p, shape= _vox_num,
             dtype='float32')
 
 def stir_get_ODL_domain_from_STIR_domain(_stir_domain):
@@ -414,7 +412,7 @@ def stir_get_STIR_image_from_ODL_Vector(_domain, _data):
     if not isinstance( _domain, DiscreteLp):
             raise TypeError('An ODL DiscreteLP is required as first input')
 
-    if not isinstance( _data, DiscreteLpVector):
+    if not isinstance( _data, DiscreteLpElement):
             raise TypeError('An ODL DiscreteLPVector is required as second input')
 
     stir_image = stir_get_STIR_domain_from_ODL(_domain)
@@ -439,7 +437,7 @@ def stir_operate_STIR_and_ODL_vectors(_stir_data, _odl_data, _operator):
     -------
 
     """
-    if not isinstance( _odl_data, DiscreteLpVector) or not\
+    if not isinstance( _odl_data, DiscreteLpElement) or not\
             isinstance( _stir_data, stir.FloatVoxelsOnCartesianGrid):
             raise TypeError('The first input should be the STIR data'
                             'and the second value should be ODL Vector')
@@ -552,7 +550,7 @@ def stir_transform_array_to_STIR_orientation(_this):
         odl.uniform_discr(
             min_corner=vol_min, max_corner=vol_max, nsamples=vox_num,
             dtype='float32')
-    elif isinstance(_this, DiscreteLpVector):
+    elif isinstance(_this, DiscreteLpElement):
         # TODO: Implement it in the near future.
         pass
     else:
@@ -593,8 +591,8 @@ def get_volume_geometry(discr_reco):
     vol_shp = discr_reco.partition.shape
     voxel_size = discr_reco.cell_sides
 
-    min_point = discr_reco.partition.begin
-    max_point = discr_reco.partition.end
+    min_point = discr_reco.partition.min_pt
+    max_point = discr_reco.partition.max_pt
 
     return np.asarray(vol_shp, dtype=np.int32), np.asarray(voxel_size, dtype=np.float32),\
                         np.asarray(min_point, dtype=np.float32), np.asarray(max_point, dtype=np.float32)
@@ -713,7 +711,7 @@ def create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(_voxels):
     vol_min = [stir_vol_min[1], stir_vol_min[2],stir_vol_min[3]]
 
     return odl.uniform_discr(
-            min_corner=vol_min, max_corner=vol_max, nsamples=vox_num,
+            min_pt=vol_min, max_pt=vol_max, shape=vox_num,
             dtype='float32')
 
 
@@ -728,8 +726,8 @@ def get_2D_grid_from_domain(_this_domain):
     -------
 
     """
-    return  RegularGrid([_this_domain.space.partition.begin[0], _this_domain.space.partition.begin[1]],
-                        [_this_domain.space.partition.end[0], _this_domain.space.partition.end[1]], (2, 3))
+    return  odl.uniform_grid([_this_domain.space.partition.min_pt[0], _this_domain.space.partition.min_pt[1]],
+                        [_this_domain.space.partition.max_pt[0], _this_domain.space.partition.max_pt[1]], (2, 3))
 
 
 def get_examination_info():
