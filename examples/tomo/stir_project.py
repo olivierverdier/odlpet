@@ -14,7 +14,7 @@ from os import path
 import stir
 import odl
 
-from odl.tomo.backends.stir_bindings import stir_projector_from_file
+from odlpet.stir.bindings import stir_projector_from_file
 
 # Load STIR input files with data
 base = path.join(path.dirname(path.abspath(__file__)), 'data', 'stir')

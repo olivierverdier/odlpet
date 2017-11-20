@@ -10,7 +10,7 @@ Note that running this example requires an installation of
 `STIR <http://stir.sourceforge.net/>`_ and its Python bindings.
 """
 
-from odl.tomo.backends.stir_setup import (
+from odlpet.stir.setup import (
     stir_get_ODL_domain_which_honours_STIR_restrictions,
     stir_get_STIR_domain_from_ODL,
     stir_get_ODL_domain_from_STIR,
@@ -18,7 +18,7 @@ from odl.tomo.backends.stir_setup import (
     stir_get_projection_data_info,
     stir_get_projection_data,
 )
-from odl.tomo.backends.stir_bindings import stir_projector_from_memory
+from odlpet.stir.bindings import stir_projector_from_memory
 
 # Temporal edit to account for the stuff.
 
