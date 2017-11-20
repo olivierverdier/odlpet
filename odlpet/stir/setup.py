@@ -14,19 +14,10 @@ from odl.discr.lp_discr import DiscreteLp, DiscreteLpElement
 from odl.tomo.geometry import Flat2dDetector
 from odl.tomo.util.utility import perpendicular_vector
 
-try:
-    import stir
-    # Fix for stirextra being moved around in various stir versions
-    try:
-        stirextra = stir.stirextra
-    except AttributeError:
-        import stirextra
+import stir
+import stirextra
 
-    STIR_AVAILABLE = True
-except ImportError:
-    STIR_AVAILABLE = False
-
-__all__ = ('STIR_AVAILABLE',
+__all__ = (
            'stir_get_projection_data_info',
            'stir_get_projection_data',
            'stir_operate_STIR_and_ODL_vectors',
