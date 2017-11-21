@@ -19,6 +19,7 @@ from odlpet.stir.setup import (
     stir_get_projection_data,
 )
 from odlpet.stir.bindings import stir_projector_from_memory
+from odlpet.scanner.scanner import mCT
 
 # Temporal edit to account for the stuff.
 
@@ -38,31 +39,7 @@ stir_domain = stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 #
 # This would correspond to the mCT scanner
 #
-# Detector x size in mm - plus the ring difference
-det_nx_mm = 6.25
-# Detector y size in mm - plus the ring difference
-det_ny_mm = 6.25
-# Total number of rings
-num_rings = 8
-# Total number of detectors per ring
-num_dets_per_ring = 112
-# Inner radius of the scanner (crystal surface)
-det_radius = 57.5 # in mm
-
-#
-# Additional things that STIR would like to know
-#
-average_depth_of_inter = 7.0 # in mm
-ring_spacing = det_ny_mm
-voxel_size_xy = 1.65 # in mm
-axial_crystals_per_block = 8
-trans_crystals_per_block = 7
-axials_blocks_per_bucket = 1
-trans_blocks_per_bucket = 16
-axial_crystals_per_singles_unit = 8
-trans_crystals_per_singles_unit = 0
-num_detector_layers = 1
-intrinsic_tilt = 0.0
+scanner = mCT()
 
 # Create a PET geometry (ODL object) which is similar
 # to the one that STIR will create using these values
@@ -70,16 +47,7 @@ intrinsic_tilt = 0.0
 #                                                                       num_rings, num_dets_per_ring,
 #                                                                       det_radius)
 
-# Now create the STIR geometry
-stir_scanner = stir_get_STIR_geometry(num_rings, num_dets_per_ring,
-                                               det_radius, ring_spacing,
-                                               average_depth_of_inter,
-                                               voxel_size_xy,
-                                               axial_crystals_per_block, trans_crystals_per_block,
-                                               axials_blocks_per_bucket, trans_blocks_per_bucket,
-                                               axial_crystals_per_singles_unit, trans_crystals_per_singles_unit,
-                                               num_detector_layers, intrinsic_tilt)
-
+stir_scanner = scanner.get_stir_scanner()
 
 
 # Parameters usefull to the projector setup
@@ -103,12 +71,12 @@ max_num_segments = 3
 # If the views is less than half the number of detectors defined in
 #  the Scanner then we subsample the scanner angular positions.
 # If it is larger we are going to have empty cells in the sinogram
-num_of_views = num_dets_per_ring / 2
+num_of_views = scanner.num_dets_per_ring / 2
 
 # The number of tangestial positions refers to the last sinogram
 # coordinate which is going to be the LOS's distance from the center
 # of the FOV. Normally this would be the number of default_non_arc_bins
-num_non_arccor_bins = num_dets_per_ring / 2
+num_non_arccor_bins = scanner.num_dets_per_ring / 2
 
 # A boolean if the data have been arccorrected during acquisition
 # or in preprocessing. Anyways, STIR will not do that for you, but needs
