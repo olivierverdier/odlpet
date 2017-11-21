@@ -11,14 +11,11 @@
 from __future__ import division
 import os.path as pth
 import odl
-import pytest
-from odl.tomo.backends.stir_bindings import stir_projector_from_file
+from odlpet.stir.bindings import stir_projector_from_file
 
 
-pytestmark = odl.util.skip_if_no_largescale
 
 
-@odl.util.skip_if_no_stir
 def test_from_file():
     # Set path to input files
     base = pth.join(pth.dirname(pth.abspath(__file__)), 'data', 'stir')
@@ -46,5 +43,3 @@ def test_from_file():
     assert recon.dist(vol) < vol.norm() / 2.0
 
 
-if __name__ == '__main__':
-    pytest.main([str(__file__.replace('\\', '/')), '-v', '--largescale'])
