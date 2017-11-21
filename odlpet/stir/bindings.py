@@ -47,7 +47,7 @@ except ImportError:
 from odl.discr import uniform_discr
 from odl.operator import Operator
 
-from .setup import space_from_voxels_origin
+from .setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
 
 import numpy as np
 
@@ -291,7 +291,7 @@ def stir_projector_from_file(volume_file, projection_file):
         A STIR forward projector.
     """
     volume = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file)
-    recon_sp = space_from_voxels_origin(volume)
+    recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(volume)
 
     proj_data_in = stir.ProjData.read_from_file(projection_file)
     proj_data = stir.ProjDataInMemory(proj_data_in.get_exam_info(),
