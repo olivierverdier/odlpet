@@ -47,6 +47,8 @@ except ImportError:
 from odl.discr import uniform_discr
 from odl.operator import Operator
 
+from .setup import space_from_voxels_origin
+
 import numpy as np
 
 __all__ = ('ForwardProjectorByBinWrapper',
@@ -289,26 +291,12 @@ def stir_projector_from_file(volume_file, projection_file):
         A STIR forward projector.
     """
     volume = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file)
+    recon_sp = space_from_voxels_origin(volume)
 
     proj_data_in = stir.ProjData.read_from_file(projection_file)
     proj_data = stir.ProjDataInMemory(proj_data_in.get_exam_info(),
                                       proj_data_in.get_proj_data_info())
 
-    # TODO: compare with create_empty_VoxelsOnCartesianGrid_from_DiscreteLP
-    origin = volume.get_origin()
-    grid_spacing = volume.get_grid_spacing()
-    grid_shape = [volume.get_z_size(),
-                  volume.get_y_size(),
-                  volume.get_x_size()]
-    min_pt = [origin[1], origin[2], origin[3]]
-    max_pt = [origin[1] + grid_spacing[1] * grid_shape[0],
-              origin[2] + grid_spacing[2] * grid_shape[1],
-              origin[3] + grid_spacing[3] * grid_shape[2]]
-
-    # reverse to handle STIR bug? See:
-    # https://github.com/UCL/STIR/issues/7
-    recon_sp = uniform_discr(min_pt, max_pt, grid_shape,
-                             dtype='float32')
 
     # TODO: set correct projection space. Currently, a default grid with
     # stride (1, 1, 1) is used.

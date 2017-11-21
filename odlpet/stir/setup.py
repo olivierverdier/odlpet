@@ -638,6 +638,26 @@ def create_empty_VoxelsOnCartesianGrid_from_DiscreteLP(_discr, _fill_value = 0.0
 
     return domain
 
+def space_from_voxels_origin(volume):
+    """
+    Original function inside bindings.
+    This assumes that the min point is at the origin.
+    """
+    origin = volume.get_origin()
+    grid_spacing = volume.get_grid_spacing()
+    grid_shape = [volume.get_z_size(),
+                  volume.get_y_size(),
+                  volume.get_x_size()]
+    min_pt = [origin[1], origin[2], origin[3]]
+    max_pt = [origin[1] + grid_spacing[1] * grid_shape[0],
+              origin[2] + grid_spacing[2] * grid_shape[1],
+              origin[3] + grid_spacing[3] * grid_shape[2]]
+
+    # reverse to handle STIR bug? See:
+    # https://github.com/UCL/STIR/issues/7
+    recon_sp = odl.uniform_discr(min_pt, max_pt, grid_shape,
+                             dtype='float32')
+    return recon_sp
 
 def create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(_voxels):
     """
