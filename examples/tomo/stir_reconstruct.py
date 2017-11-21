@@ -168,6 +168,6 @@ from odl.solvers import landweber
 op_norm_est_squared = proj.adjoint(projections).norm() / vol.norm()
 omega = 0.5 / op_norm_est_squared
 
-recon = proj.domain.zero()
-landweber(proj, recon, projections, niter=50, omega=omega)
-recon.show()
+# recon = proj.domain.zero()
+# landweber(proj, recon, projections, niter=50, omega=omega)
+# recon.show()
