@@ -1,5 +1,7 @@
 import pytest
 
+import numpy as np
+
 from odlpet.stir.bindings import stir_projector_from_memory
 from odlpet.scanner.scanner import mCT
 
@@ -50,19 +52,14 @@ def test_purity():
 
     import odl
 
-    solver = odl.solvers.iterative.statistical.mlem
-    # solver = odl.solvers.iterative.gauss_newton
-
-    # the problem occurs from this point on
-    projections = proj(phantom)
-    # projections.show(coords=(20,None,None))
-
     ms = []
     for i in range(2):
-        recon = proj.domain.one()*.01
-        solver(proj, recon, projections.copy(), niter=1)
-        print(i, recon.asarray().max())
-        ms.append(recon.asarray().max())
+        back_proj = proj.adjoint(proj.range.one())
+        s_min = np.min(back_proj)
+        s_max = np.max(back_proj)
+        recon = proj.domain.one()
+        proj(recon)
+        ms.append((s_min, s_max))
     print(ms)
     assert pytest.approx(ms[0]) == ms[1]
 
