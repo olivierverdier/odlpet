@@ -11,7 +11,6 @@ from odlpet.stir.setup import (
     stir_get_ODL_domain_which_honours_STIR_restrictions,
     stir_get_STIR_domain_from_ODL,
     stir_get_ODL_domain_from_STIR,
-    stir_get_STIR_geometry,
     stir_get_projection_data_info,
     stir_get_projection_data,
 )
