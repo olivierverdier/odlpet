@@ -168,10 +168,10 @@ class ForwardProjectorByBinWrapper(Operator):
 
         # project
         with StirVerbosity(1):
-            self.projector.forward_project(self.proj_data, self.volume)
+            res = call_with_stir_buffer(self.projector.forward_project, self.volume, self.proj_data, volume)
 
         # make ODL data
-        out[:] = stirextra.to_numpy(self.proj_data)
+        out[:] = res
 
     @property
     def adjoint(self):
@@ -259,16 +259,18 @@ class BackProjectorByBinWrapper(Operator):
 
     def _call(self, projections, out):
         """Back project."""
-        # Set projection data
-        self.proj_data.fill(projections.asarray().flat)
-
-        # back-project
         with StirVerbosity(1):
-            self.back_projector.back_project(self.volume, self.proj_data)
+            res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections)
 
         # make ODL data
-        out[:] = stirextra.to_numpy(self.volume)
+        out[:] = res
 
+def call_with_stir_buffer(function, b_in, b_out, v_in, v_out=None):
+    b_in.fill(v_in.asarray().flat)
+    if v_out is not None:
+        b_out.fill(v_out.asarray().flat)
+    function(b_out, b_in)
+    return stirextra.to_numpy(b_out)
 
 
 def stir_projector_from_file(volume_file, projection_file):
