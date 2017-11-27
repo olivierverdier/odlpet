@@ -260,7 +260,7 @@ class BackProjectorByBinWrapper(Operator):
     def _call(self, projections, out):
         """Back project."""
         with StirVerbosity(1):
-            res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections)
+            res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections, self.range.zero())
 
         # make ODL data
         out[:] = res
