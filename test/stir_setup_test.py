@@ -8,14 +8,12 @@ standard_library.install_aliases()
 # External
 import numpy as np
 import pytest
-from odl.tomo.backends.stir_setup import STIR_AVAILABLE
 
 import odl
 from odl.util.testutils import is_subdict
 
-pytestmark = pytest.mark.skipif(not odl.tomo.STIR_AVAILABLE, reason="stir not available")
 
-@pytest.mark.skip("Fails for some reason")
+# @pytest.mark.skip("Fails for some reason")
 def test_vol_geom_3d():
     """ Create STIR 3D volume.
     Create a ODL domain (with restrictions) : Trasform it to STIR : Reverse transform back to ODL and match.
@@ -72,5 +70,4 @@ def test_vector_transfer(_display=False):
         fig3 = odl.tomo.stir_unified_display_function(stir_slice, odl_phantom, _title="STIR phantom")
 
     assert odl.util.testutils.all_almost_equal(odl_slice, stir_slice)
-
 
