@@ -34,11 +34,16 @@ def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
     scanner.set_num_transaxial_crystals_per_singles_unit(np.int32(_trans_crystals_per_singles_unit))
     scanner.set_num_detector_layers(np.int32(_num_detector_layers))
 
-    if scanner.check_consistency():
+    if _check_consistency(scanner):
         return scanner
     else:
         raise TypeError('Something is wrong in the scanner geometry.')
 
+
+def _check_consistency(_scanner):
+    # TODO: this does not work. check_consistency does not return a Boolean
+    # should be success == stir.Succeeded(stir.Succeeded.yes)
+    return _scanner.check_consistency()
 
 class Scanner():
 
