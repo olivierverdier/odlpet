@@ -30,7 +30,7 @@ def test_purity():
 
     dummy_discr_dom_odl = stir_get_ODL_domain_from_STIR(stir_domain)
 
-    proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, compression.get_stir_proj_data(stir_domain))
+    proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, compression)
 
     phantom = proj.domain.one()
 

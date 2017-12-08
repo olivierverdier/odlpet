@@ -40,30 +40,27 @@ class Compression:
         # to know.
         self.data_arc_corrected = False
 
-    def get_stir_proj_data_info(self, stir_domain):
+    def get_stir_proj_data_info(self):
         proj_info = stir_get_projection_data_info(
             self.scanner.get_stir_scanner(),
             self.span_num,
             self.max_num_segments,
             self.num_of_views,
             self.num_non_arccor_bins,
-            self.data_arc_corrected,
-            stir_domain)
+            self.data_arc_corrected)
         return proj_info
 
-    def get_stir_proj_data(self, stir_domain, initialize_to_zero=True):
-        proj_data = stir_get_projection_data(self.get_stir_proj_data_info(stir_domain), initialize_to_zero)
+    def get_stir_proj_data(self, initialize_to_zero=True):
+        proj_data = stir_get_projection_data(self.get_stir_proj_data_info(), initialize_to_zero)
         return proj_data
 
 def stir_get_projection_data_info(_stir_scanner, _span_num,
                                   _max_num_segments, _num_of_views,
-                                  _num_non_arccor_bins, _data_arc_corrected,
-                                  _domain=0):
+                                  _num_non_arccor_bins, _data_arc_corrected):
     """
     ... more documentation needed ...
     Parameters
     ----------
-    _domain
     _stir_scanner
     _span_num
     _max_num_segments
@@ -75,18 +72,6 @@ def stir_get_projection_data_info(_stir_scanner, _span_num,
     -------
 
     """
-
-    # TODO: fix the default domain
-    if _domain is not 0:
-        if not isinstance( _domain, stir.FloatVoxelsOnCartesianGrid):
-            raise TypeError('The domain must be a STIR FloatVoxelsOnCartesianGrid object')
-
-        scanner_vox_size = _stir_scanner.get_ring_spacing()
-        domain_vox_size = _domain.get_voxel_size()
-
-        if not np.fmod( np.float32(scanner_vox_size), np.float32(domain_vox_size[1])) == 0.0:
-            raise ValueError('The domain voxel size should divide the scanner\'s ring spacing')
-
     num_rings = _stir_scanner.get_num_rings()
 
     span_num = np.int32(_span_num)

@@ -20,9 +20,8 @@ def test_memory_run():
     stir_domain = stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
     scanner = mCT()
     compression = Compression(scanner)
-    proj_data = compression.get_stir_proj_data(stir_domain)
     dummy_discr_dom_odl = stir_get_ODL_domain_from_STIR(stir_domain)
-    proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, proj_data)
+    proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, compression)
     result = proj(proj.domain.one())
 
 def test_file_run():
