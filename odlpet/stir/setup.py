@@ -186,6 +186,7 @@ def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
     # bin_size = (_det_radius*2) / (_num_dets_per_ring/2)
     max_num_non_arc_cor_bins = int(_num_dets_per_ring/2)
 
+    # TODO: use "Userdefined" instead? (should not change much)
     scanner = stir.Scanner.get_scanner_from_name('')
 
     scanner.set_num_rings(np.int32(_num_rings))
