@@ -235,6 +235,7 @@ def stir_get_projection_data_info(_stir_scanner, _span_num,
 
     """
 
+    # TODO: fix the default domain
     if _domain is not 0:
         if not isinstance( _domain, stir.FloatVoxelsOnCartesianGrid):
             raise TypeError('The domain must be a STIR FloatVoxelsOnCartesianGrid object')
