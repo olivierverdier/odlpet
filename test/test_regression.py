@@ -7,12 +7,10 @@ from odlpet.stir.setup import (
     stir_get_ODL_domain_which_honours_STIR_restrictions,
     stir_get_STIR_domain_from_ODL,
     stir_get_ODL_domain_from_STIR,
-    stir_get_STIR_geometry,
-    stir_get_projection_data_info,
-    stir_get_projection_data,
 )
 from odlpet.stir.bindings import stir_projector_from_memory
 from odlpet.scanner.scanner import mCT
+from odlpet.scanner.compression import Compression
 import odlpet.utils.phantom
 
 def test_regression():
@@ -24,23 +22,13 @@ def test_regression():
     stir_domain = stir_get_STIR_domain_from_ODL(discr_dom_odl, 0.0)
 
     scanner = mCT()
-
-    stir_scanner = scanner.get_stir_scanner()
-
-    span_num = 1
-    max_num_segments = 3
-    num_of_views = scanner.num_dets_per_ring / 2
-    num_non_arccor_bins = scanner.num_dets_per_ring / 2
-    data_arc_corrected = False
-    proj_info = stir_get_projection_data_info(stir_scanner, span_num, max_num_segments, num_of_views, num_non_arccor_bins, data_arc_corrected, stir_domain)
-
-    initialize_to_zero = True
-    proj_data = stir_get_projection_data(proj_info, initialize_to_zero)
+    compression = Compression(scanner)
+    compression.max_num_segments = 3
 
     dummy_discr_dom_odl = stir_get_ODL_domain_from_STIR(stir_domain)
 
 
-    proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, proj_data, proj_info)
+    proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, compression.get_stir_proj_data(stir_domain))
 
     phantom = odlpet.utils.phantom.derenzo(proj.domain)
 
