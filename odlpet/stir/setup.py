@@ -14,22 +14,6 @@ from odl.tomo.util.utility import perpendicular_vector
 import stir
 import stirextra
 
-__all__ = (
-           'stir_get_projection_data_info',
-           'stir_get_projection_data',
-           'stir_operate_STIR_and_ODL_vectors',
-           'stir_get_ODL_domain_which_honours_STIR_restrictions',
-           'stir_get_ODL_geometry_which_honours_STIR_restrictions',
-           'stir_get_STIR_geometry',
-           'stir_get_STIR_domain_from_ODL',
-           'stir_get_ODL_domain_from_STIR',
-           'stir_get_STIR_image_from_ODL_Vector',
-           'stir_get_STIR_data_as_array',
-           'stir_get_domain_from_Proj_info',
-           'stir_unified_display_function',
-           'stir_transform_array_to_STIR_orientation',
-           'stir_transform_array_to_STIR_orientation_reverse',
-           'stir_get_discretized_image_from_Cartesian_voxels')
 
 #
 #
