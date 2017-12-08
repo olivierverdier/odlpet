@@ -2,15 +2,12 @@ from __future__ import print_function, division, absolute_import
 from future import standard_library
 
 
-import sys
 standard_library.install_aliases()
 
 # External
-import numpy as np
 import pytest
 
 import odl
-from odl.util.testutils import is_subdict
 
 
 
