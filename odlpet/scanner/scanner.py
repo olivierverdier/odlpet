@@ -41,9 +41,7 @@ def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
 
 
 def _check_consistency(_scanner):
-    # TODO: this does not work. check_consistency does not return a Boolean
-    # should be success == stir.Succeeded(stir.Succeeded.yes)
-    return _scanner.check_consistency()
+    return _scanner.check_consistency() == stir.Succeeded(stir.Succeeded.yes)
 
 class Scanner():
 
