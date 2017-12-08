@@ -6,9 +6,6 @@ import odl
 standard_library.install_aliases()
 
 import numpy as np
-import matplotlib.pyplot as plt
-
-from odl.util.graphics import show_discrete_data
 
 from odl.discr.lp_discr import DiscreteLp, DiscreteLpElement
 from odl.tomo.geometry import Flat2dDetector
@@ -456,6 +453,10 @@ def stir_unified_display_function(_display_me, _in_this_grid, _title=""):
     -------
     A matplotlib.pyplot figure
     """
+
+    import matplotlib.pyplot as plt
+
+    from odl.util.graphics import show_discrete_data
 
     grid = get_2D_grid_from_domain(_in_this_grid)
 
