@@ -1,6 +1,11 @@
 import stir
 import numpy as np
 
+def get_scanner_names():
+    all_names = stir.Scanner_list_all_names()
+    names = [name_.split(',')[0].rstrip() for name_ in all_names.split('\n')[:-1]]
+    return names
+
 def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
                            _det_radius, _ring_spacing,
                            _average_depth_of_inter,
