@@ -161,7 +161,7 @@ def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z
 
 
 
-def stir_get_STIR_domain_from_ODL(_discreteLP, _fill_value=0.0, _get_me= False):
+def stir_get_STIR_domain_from_ODL(_discreteLP, _fill_value=0.0):
     """
     Interface function to get a STIR domain without caring about the classes names.
 
@@ -174,7 +174,7 @@ def stir_get_STIR_domain_from_ODL(_discreteLP, _fill_value=0.0, _get_me= False):
 
     """
 
-    return create_empty_VoxelsOnCartesianGrid_from_DiscreteLP(_discreteLP, _fill_value, _get_me)
+    return create_empty_VoxelsOnCartesianGrid_from_DiscreteLP(_discreteLP, _fill_value)
 
 
 def stir_get_domain_from_Proj_info(_proj_info, _zoom, _size = [-1, -1, -1], _offset = [0, 0, 0]):
@@ -435,7 +435,7 @@ def get_volume_geometry(discr_reco):
 
 
 
-def create_empty_VoxelsOnCartesianGrid_from_DiscreteLP(_discr, _fill_value = 0.0, get_me = False):
+def create_empty_VoxelsOnCartesianGrid_from_DiscreteLP(_discr, _fill_value = 0.0):
     """
     This class defines multi-dimensional (numeric) arrays.
     This class implements multi-dimensional arrays which can have 'irregular' ranges.
