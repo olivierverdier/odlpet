@@ -26,12 +26,6 @@ the STIR classes used here.
 .. _STIR doc: http://stir.sourceforge.net/documentation/doxy/html/
 """
 
-# Imports for common Python 2/3 codebase
-from __future__ import print_function, division, absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import super
-
 import stir, stirextra
 
 
