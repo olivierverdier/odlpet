@@ -1,5 +1,6 @@
 import stir
 import numpy as np
+from odl.discr import uniform_discr
 
 class Compression:
     def __init__(self, scanner):
@@ -53,6 +54,19 @@ class Compression:
     def get_stir_proj_data(self, initialize_to_zero=True):
         proj_data = stir_get_projection_data(self.get_stir_proj_data_info(), initialize_to_zero)
         return proj_data
+
+    def get_range(self):
+        """
+        Get an ODL codomain (range) from the projection data.
+        """
+        return get_range_from_proj_data(self.get_stir_proj_data())
+
+def get_range_from_proj_data(proj_data):
+    # TODO: set correct projection space. Currently, a default grid with
+    # stride (1, 1, 1) is used.
+    proj_shape = proj_data.to_array().shape()
+    data_sp = uniform_discr([0, 0, 0], proj_shape, proj_shape, dtype='float32')
+    return data_sp
 
 def stir_get_projection_data_info(_stir_scanner, _span_num,
                                   _max_num_segments, _num_of_views,

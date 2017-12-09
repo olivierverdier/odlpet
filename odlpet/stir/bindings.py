@@ -44,10 +44,11 @@ try:
 except ImportError:
     STIR_AVAILABLE = False
 
-from odl.discr import uniform_discr
 from odl.operator import Operator
 
 from .setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
+from odlpet.scanner.compression import get_range_from_proj_data
+
 
 import numpy as np
 
@@ -300,39 +301,33 @@ def stir_projector_from_file(volume_file, projection_file):
                                       proj_data_in.get_proj_data_info())
 
 
-    # TODO: set correct projection space. Currently, a default grid with
-    # stride (1, 1, 1) is used.
-    proj_shape = proj_data.to_array().shape()
-    data_sp = uniform_discr([0, 0, 0], proj_shape, proj_shape, dtype='float32')
+    data_sp = get_range_from_proj_data(proj_data)
 
     return ForwardProjectorByBinWrapper(recon_sp, data_sp, volume, proj_data)
 
 
 def stir_projector_from_memory(_recon_sp,
                                _volume,
-                               _proj_data,
-                               _proj_info):
+                               compression):
     """
 
     Parameters
     ----------
     _recon_sp : A discreteLP object
     _volume : A STIR VoxelsOnCatesianGrid object
-    _proj_data: A ProjData object
+    compression: A Compression object
 
     Returns
     -------
     projector : `ForwardProjectorByBinWrapper`
         A STIR forward projector.
     """
+    proj_data = compression.get_stir_proj_data()
 
-    # TODO: set correct projection space. Currently, a default grid with
-    # stride (1, 1, 1) is used.
-    proj_shape = _proj_data.to_array().shape()
-    data_sp = uniform_discr([0, 0, 0], proj_shape, proj_shape, dtype='float32')
+    data_sp = compression.get_range()
 
     return ForwardProjectorByBinWrapper(_recon_sp, data_sp, _volume,
-                                        _proj_data, _proj_info)
+                                        proj_data)
 
 
 if __name__ == '__main__':
