@@ -52,11 +52,6 @@ from odlpet.scanner.compression import get_range_from_proj_data
 
 import numpy as np
 
-__all__ = ('ForwardProjectorByBinWrapper',
-           'BackProjectorByBinWrapper',
-           'stir_projector_from_file',
-           'stir_projector_from_memory'
-           'STIR_AVAILABLE')
 
 
 class StirVerbosity(object):
