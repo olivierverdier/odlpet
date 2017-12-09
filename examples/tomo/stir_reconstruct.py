@@ -14,11 +14,8 @@ from odlpet.stir.setup import (
     stir_get_ODL_domain_which_honours_STIR_restrictions,
     stir_get_STIR_domain_from_ODL,
     stir_get_ODL_domain_from_STIR,
-    stir_get_STIR_geometry,
-    stir_get_projection_data_info,
-    stir_get_projection_data,
 )
-from odlpet.stir.bindings import stir_projector_from_memory
+from odlpet.stir.bindings import stir_projector_from_memory, StirVerbosity
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
 
@@ -51,8 +48,6 @@ scanner = mCT()
 
 compression = Compression(scanner)
 
-proj_data = compression.get_stir_proj_data(stir_domain)
-
 #
 # Let's do something with all this stuff.
 #
@@ -69,9 +64,7 @@ dummy_discr_dom_odl = stir_get_ODL_domain_from_STIR(stir_domain)
 
 
 # Initialize the forward projector
-proj = stir_projector_from_memory(dummy_discr_dom_odl,
-                                                                  stir_domain,
-                                                                  proj_data,)
+proj = stir_projector_from_memory(dummy_discr_dom_odl, stir_domain, compression)
 
 
 # Create Shepp-Logan phantom
