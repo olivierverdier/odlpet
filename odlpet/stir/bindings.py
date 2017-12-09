@@ -70,7 +70,7 @@ class ForwardProjectorByBinWrapper(Operator):
 
     def __init__(self, domain, range, volume, proj_data,
                  _proj_info=None,
-                 projector=None, adjoint=None):
+                 projector=None, adjoint=None, verbosity=0):
         """Initialize a new instance.
 
         Parameters
@@ -89,7 +89,9 @@ class ForwardProjectorByBinWrapper(Operator):
             A pre-initialized projector.
         adjoint : `BackProjectorByBinWrapper`, optional
             A pre-initialized adjoint.
+        verbosity: STIR verbosity
         """
+        self.verbosity = verbosity
         # Check data sizes
         if domain.shape != volume.shape():
             raise ValueError('domain.shape {} does not equal volume shape {}'
@@ -154,7 +156,7 @@ class ForwardProjectorByBinWrapper(Operator):
         self.volume.fill(volume.asarray().flat)
 
         # project
-        with StirVerbosity(1):
+        with StirVerbosity(self.verbosity):
             res = call_with_stir_buffer(self.projector.forward_project, self.volume, self.proj_data, volume)
 
         # make ODL data
@@ -171,7 +173,7 @@ class BackProjectorByBinWrapper(Operator):
     """A back projector using STIR."""
 
     def __init__(self, domain, range, volume, proj_data,
-                 back_projector=None, adjoint=None):
+                 back_projector=None, adjoint=None, verbosity=0):
         """Initialize a new instance.
 
         Parameters
@@ -199,7 +201,7 @@ class BackProjectorByBinWrapper(Operator):
         ----------
         .. _STIR doc: http://stir.sourceforge.net/documentation/doxy/html/
         """
-
+        self.verbosity = verbosity
         # Check data sizes
         if range.shape != volume.shape():
             raise ValueError('`range.shape` {} does not equal volume shape {}'
@@ -246,7 +248,7 @@ class BackProjectorByBinWrapper(Operator):
 
     def _call(self, projections, out):
         """Back project."""
-        with StirVerbosity(1):
+        with StirVerbosity(self.verbosity):
             res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections, self.range.zero())
 
         # make ODL data
