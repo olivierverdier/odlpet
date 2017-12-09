@@ -38,7 +38,7 @@ import stir, stirextra
 from odl.operator import Operator
 
 from .setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
-from odlpet.scanner.compression import get_range_from_proj_data
+from ..scanner.compression import get_range_from_proj_data
 
 
 import numpy as np
