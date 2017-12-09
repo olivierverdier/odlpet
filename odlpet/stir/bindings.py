@@ -32,17 +32,8 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import super
 
-try:
-    import stir
-    # Fix for stirextra being moved around in various stir versions
-    try:
-        stirextra = stir.stirextra
-    except AttributeError:
-        import stirextra
+import stir, stirextra
 
-    STIR_AVAILABLE = True
-except ImportError:
-    STIR_AVAILABLE = False
 
 from odl.operator import Operator
 
