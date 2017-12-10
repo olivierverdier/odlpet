@@ -32,7 +32,6 @@ import stir, stirextra
 from odl.operator import Operator
 
 from .setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
-from ..scanner.compression import get_range_from_proj_data
 
 
 import numpy as np
@@ -283,6 +282,7 @@ def stir_projector_from_file(volume_file, projection_file):
                                       proj_data_in.get_proj_data_info())
 
 
+    from ..scanner.compression import get_range_from_proj_data
     data_sp = get_range_from_proj_data(proj_data)
 
     return ForwardProjectorByBinWrapper(recon_sp, data_sp, volume, proj_data)

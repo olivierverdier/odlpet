@@ -43,4 +43,10 @@ def test_file_run():
     # Project and show
     result = proj(vol)
 
+def test_simple_run():
+    scanner = mCT()
+    compression = Compression(scanner)
+    proj = compression.get_projector()
+    result = proj(proj.domain.one())
+
 # TODO: test that loading from file or memory gives the same result.

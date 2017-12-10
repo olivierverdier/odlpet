@@ -1,6 +1,8 @@
 import stir
 import numpy as np
 from odl.discr import uniform_discr
+from ..stir.setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
+from ..stir.bindings import ForwardProjectorByBinWrapper
 
 class Compression:
     def __init__(self, scanner):
@@ -104,6 +106,14 @@ class Compression:
         proj_info = self.get_stir_proj_data_info()
 
         return stir.FloatVoxelsOnCartesianGrid(proj_info, np.float32(zoom), offset_, sizes_)
+
+    def get_projector(self, domain=None):
+        if domain is None:
+            domain = self.get_domain()
+
+        recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(domain)
+
+        return ForwardProjectorByBinWrapper(recon_sp, self.get_range(), domain, self.get_stir_proj_data())
 
 def get_range_from_proj_data(proj_data):
     # TODO: set correct projection space. Currently, a default grid with
