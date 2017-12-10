@@ -173,47 +173,7 @@ def stir_get_STIR_domain_from_ODL(_discreteLP, _fill_value=0.0):
     return create_empty_VoxelsOnCartesianGrid_from_DiscreteLP(_discreteLP, _fill_value)
 
 
-def stir_get_domain_from_Proj_info(_proj_info, _zoom, _size = [-1, -1, -1], _offset = [0, 0, 0]):
-    """
-    In the stir-wise way of reconstruction usually the projdata info creates a suitable domain
-    When sizes.x() is -1, a default size in x is found by taking the diameter
-    of the FOV spanned by the projection data. Similar for sizes.y().
-    When sizes.z() is -1, a default size in z is found by taking the number of planes as
 
-    $N_0$ when segment 0 is axially compressed,
-    $2N_0-1$ when segment 0 is not axially compressed,
-
-    where $N_0$ is the number of sinograms in segment 0.
-
-    Actual index ranges start from 0 for z, but from -(x_size_used/2) for x (and similar for y).
-
-    x,y grid spacing are set to the proj_data_info_ptr->get_scanner_ptr()->get_default_bin_size()/zoom.
-    This is to make sure that the voxel size is independent on if arc-correction is used or not.
-    If the default bin size is 0, the sampling distance in s (for bin 0) is used.
-
-    z grid spacing is set to half the scanner ring distance.
-    Parameters
-    ----------
-    _proj_info
-    _size
-    _offset
-
-    Returns
-    -------
-
-    .warning :: Currently it doen't seem to be working. The z size is initialised but the x and y are not
-    .todo :: File a bug report
-
-    """
-
-    sizes = stir.IntCartesianCoordinate3D(np.int32( _size[2]), np.int32(_size[1]), np.int32(_size[0]))
-
-    offsets = stir.FloatCartesianCoordinate3D()
-    offsets[3] = np.float32(_offset[0])
-    offsets[2] = np.float32(_offset[1])
-    offsets[1] = np.float32(_offset[2])
-
-    return stir.FloatVoxelsOnCartesianGrid(_proj_info, np.float32(_zoom), offsets, sizes)
 
 
 
