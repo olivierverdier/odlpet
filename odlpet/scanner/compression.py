@@ -128,10 +128,18 @@ class Compression:
         return ForwardProjectorByBinWrapper(recon_sp, self.get_range(), domain, self.get_stir_proj_data())
 
 def get_range_from_proj_data(proj_data):
-    # TODO: set correct projection space. Currently, a default grid with
-    # stride (1, 1, 1) is used.
+    """
+    The second coordinate is an angle.
+    The last one is a tangential coordinate, normalised between -1 and 1.
+    """
     proj_shape = proj_data.to_array().shape()
-    data_sp = uniform_discr([0, 0, 0], proj_shape, proj_shape, dtype='float32')
+    min_pt = [0, 0, -1.]
+    max_pt = [proj_shape[0], np.pi, 1.]
+    data_sp = uniform_discr(min_pt=min_pt,
+                            max_pt=max_pt,
+                            shape=proj_shape,
+                            axis_labels=("(dz,z)", "φ", "s"),
+                            dtype='float32')
     return data_sp
 
 def stir_get_projection_data_info(_stir_scanner, _span_num,
