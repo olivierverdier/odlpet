@@ -107,6 +107,18 @@ class Compression:
 
         return stir.FloatVoxelsOnCartesianGrid(proj_info, np.float32(zoom), offset_, sizes_)
 
+    def get_sinogram_info(self):
+        proj_info = self.get_stir_proj_data_info()
+        segments = list(range(proj_info.get_min_segment_num(), proj_info.get_max_segment_num()+1))
+        segment_sizes = [proj_info.get_max_axial_pos_num(s)+1 - proj_info.get_min_axial_pos_num(s) for s in segments]
+        return list(zip(segments, segment_sizes))
+
+    def get_offset(self, segment, axial):
+        info = self.get_sinogram_info()
+        from .sinogram import get_offset
+        return get_offset(segment, axial, info)
+
+
     def get_projector(self, domain=None):
         if domain is None:
             domain = self.get_domain()
