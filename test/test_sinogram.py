@@ -4,11 +4,7 @@ import numpy as np
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
 
-def test_sinogram():
-    """
-    Make sure that the sinogram offsets are correct.
-    """
-    scanner = mCT()
+def get_projections(scanner):
     compression = Compression(scanner)
     compression.max_num_segments = 3
 
@@ -16,6 +12,14 @@ def test_sinogram():
 
     phantom = proj.domain.element(np.random.randn(*proj.domain.shape))
     projections = proj(phantom)
+    return compression, proj, projections
+
+def test_sinogram():
+    """
+    Make sure that the sinogram offsets are correct.
+    """
+    scanner = mCT()
+    compression, proj, projections = get_projections(scanner)
 
     sinfo = compression.get_sinogram_info()
 
@@ -23,11 +27,29 @@ def test_sinogram():
     segment = sinfo[seg_ind][0]
     ax_ind = np.random.randint(sinfo[seg_ind][1])
 
-    print(sinfo, segment, ax_ind)
 
     offset = compression.get_offset(segment, ax_ind)
     computed = projections[offset].asarray()
     expected = stirextra.to_numpy(proj.proj_data.get_sinogram(ax_ind, segment))
     assert pytest.approx(computed) == expected
+
+def test_wrong_sinogram():
+    """
+    Bound controls for sinograms (wrong segment or wrong axial coordinate)
+    """
+    scanner = mCT()
+    compression, proj, projections = get_projections(scanner)
+    sinfo = compression.get_sinogram_info()
+    segments = [si[0] for si in sinfo]
+    maxax = [si[1] for si in sinfo]
+    min_seg = np.min(segments)
+    max_seg = np.max(segments)
+    with pytest.raises(ValueError):
+        compression.get_offset(min_seg - 1, 0)
+    with pytest.raises(ValueError):
+        compression.get_offset(max_seg + 1, 0)
+    for s,a in sinfo:
+        with pytest.raises(ValueError):
+            compression.get_offset(s, a+1)
 
 
