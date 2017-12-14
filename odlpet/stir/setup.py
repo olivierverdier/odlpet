@@ -207,34 +207,7 @@ def stir_get_STIR_data_as_array(_stir_data):
     return stirextra.to_numpy(_stir_data)
 
 
-def stir_unified_display_function(_display_me, _in_this_grid, _title=""):
-    """
-    This is a helper function. STIR, ODL and NumPy used different functions to display images.
-    I created this function, in order to avoid flips and rotates.
-    It which calls odl.utils.graphics.show_discrete_data.
 
-    Parameters
-    ----------
-    _display_me: A NumPy array.
-
-    _in_this_grid: A suitable grid
-
-    _title: A title for the figure
-
-    Returns
-    -------
-    A matplotlib.pyplot figure
-    """
-
-    import matplotlib.pyplot as plt
-
-    from odl.util.graphics import show_discrete_data
-
-    grid = get_2D_grid_from_domain(_in_this_grid)
-
-    fig = plt.figure()
-    show_discrete_data(_display_me, grid, fig = fig)
-    fig.canvas.set_window_title(_title)
 
 #
 #
