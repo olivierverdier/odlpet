@@ -90,68 +90,6 @@ def stir_get_ODL_domain_which_honours_STIR_restrictions(_vox_num, _vox_size):
 
 
 
-def stir_get_ODL_geometry_which_honours_STIR_restrictions(_det_y_size_mm, _det_z_size_mm,
-                                                           _num_rings, _num_dets_per_ring,
-                                                           _det_radius):
-    """
-    This function will return a CylindricalPETGeom which will match with a
-    STIR Scanner object.
-
-    .The first ring [0] of the scanner should be the one furthest from the bed.
-    .The y axis should be pointing downwards.
-    .The z axis should be the longitude.
-    .The crystal with the first transverse ID should be the one with the most
-     negative y [x=0, y = -r , z= 0].
-
-    Parameters
-    ----------
-    _det_y_size_mm
-    _det_z_size_mm
-    _num_rings
-    _num_dets_per_ring
-    _det_radius
-
-    Returns
-    -------
-
-    """
-    if _det_radius <= 0:
-        raise ValueError('ring circle radius {} is not positive.'
-                             ''.format(_det_radius))
-
-    axis = [0, 0, 1]
-
-    first_tmpl_det_point = [-_det_y_size_mm/2, -_det_z_size_mm/2]
-    last_tmpl_det_point = [_det_y_size_mm/2, _det_z_size_mm/2]
-
-    # Template of detectors
-    tmpl_det = odl.uniform_partition(first_tmpl_det_point,
-                                         last_tmpl_det_point,
-                                         [1, 1])
-
-    # Perpendicular vector from the ring center to
-    # the first detector of the same ring
-    ring_center_to_tmpl_det = perpendicular_vector(axis)
-
-    det_init_axis_0 = np.cross(axis, ring_center_to_tmpl_det)
-    det_init_axes = (det_init_axis_0, axis)
-
-    apart = odl.uniform_partition(0, 2 * np.pi, _num_dets_per_ring,
-                                      nodes_on_bdry=True)
-
-    detector = Flat2dDetector(tmpl_det, det_init_axes)
-
-    # Axial (z-axis) movement parameters.
-    # The middle of the first ring should be on (r,r,0.0)
-    axialpart = odl.uniform_partition(0, _num_rings*_det_z_size_mm, _num_rings)
-
-    from odl.tomo.geometry.pet import CylindricalPetGeom
-    return CylindricalPetGeom(_det_radius,
-                                                ring_center_to_tmpl_det,
-                                                apart,
-                                                detector,
-                                                axialpart)
-
 
 
 
