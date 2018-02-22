@@ -15,3 +15,15 @@ def test_names():
     for name in names:
         stir_scan = stir.Scanner.get_scanner_from_name(name)
         assert stir_scan.get_name() == name
+
+def test_conversion():
+    """
+    Converting from STIR to Python and back should give the same object.
+    """
+    for scan_name in scan.SCANNER_NAMES:
+        print(scan_name)
+        stir_scan = scan._get_scanner_by_name(scan_name)
+        stir_scan.check_consistency()
+        py_scan = scan._scanner_from_stir(stir_scan)
+        stir_scan_ = py_scan.get_stir_scanner()
+        assert stir_scan == stir_scan_
