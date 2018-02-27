@@ -53,15 +53,12 @@ class Compression:
             self.data_arc_corrected)
         return proj_info
 
-    def get_stir_proj_data(self, initialize_to_zero=True):
-        proj_data = stir_get_projection_data(self.get_stir_proj_data_info(), initialize_to_zero)
-        return proj_data
+    def get_stir_proj_data(self, stir_proj_data_info=None, initialize_to_zero=True):
+        if stir_proj_data_info is None:
+            stir_proj_data_info = self.get_stir_proj_data_info()
 
-    def get_range(self):
-        """
-        Get an ODL codomain (range) from the projection data.
-        """
-        return get_range_from_proj_data(self.get_stir_proj_data())
+        proj_data = stir_get_projection_data(stir_proj_data_info, initialize_to_zero)
+        return proj_data
 
     def get_stir_domain(self, zoom=1., sizes=None, offset=None):
         """
@@ -119,16 +116,22 @@ class Compression:
         return get_offset(segment, axial, info)
 
 
-    def get_projector(self, stir_domain=None):
+    def get_projector(self, stir_domain=None, stir_proj_data_info=None):
         if stir_domain is None:
             stir_domain = self.get_stir_domain()
 
-        recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(stir_domain)
+        stir_proj_data = self.get_stir_proj_data(stir_proj_data_info)
 
-        return ForwardProjectorByBinWrapper(recon_sp, self.get_range(), stir_domain, self.get_stir_proj_data())
+        recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(stir_domain)
+        data_sp = get_range_from_proj_data(stir_proj_data)
+
+        return ForwardProjectorByBinWrapper(recon_sp, data_sp, stir_domain, stir_proj_data)
+
 
 def get_range_from_proj_data(proj_data):
     """
+    Get an ODL codomain (range) from the projection data.
+
     The second coordinate is an angle.
     The last one is a tangential coordinate, normalised between -1 and 1.
     """
