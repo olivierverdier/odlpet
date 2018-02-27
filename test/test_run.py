@@ -13,7 +13,7 @@ def test_memory_run():
     """
     scanner = mCT()
     compression = Compression(scanner)
-    proj = compression.get_projector(domain=compression.get_domain(zoom=1))
+    proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=1))
     result = proj(proj.domain.one())
 
 def test_file_run():

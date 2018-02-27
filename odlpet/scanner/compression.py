@@ -63,7 +63,7 @@ class Compression:
         """
         return get_range_from_proj_data(self.get_stir_proj_data())
 
-    def get_domain(self, zoom=1., sizes=None, offset=None):
+    def get_stir_domain(self, zoom=1., sizes=None, offset=None):
         """
         In the stir-wise way of reconstruction usually the projdata info creates a suitable domain
         When sizes.x() is -1, a default size in x is found by taking the diameter
@@ -119,13 +119,13 @@ class Compression:
         return get_offset(segment, axial, info)
 
 
-    def get_projector(self, domain=None):
-        if domain is None:
-            domain = self.get_domain()
+    def get_projector(self, stir_domain=None):
+        if stir_domain is None:
+            stir_domain = self.get_stir_domain()
 
-        recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(domain)
+        recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(stir_domain)
 
-        return ForwardProjectorByBinWrapper(recon_sp, self.get_range(), domain, self.get_stir_proj_data())
+        return ForwardProjectorByBinWrapper(recon_sp, self.get_range(), stir_domain, self.get_stir_proj_data())
 
 def get_range_from_proj_data(proj_data):
     """
