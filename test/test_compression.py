@@ -34,3 +34,12 @@ def test_data_codomain():
     # simple check that the projector actually computes something:
     dummy_data = proj(proj.domain.zero())
     assert pytest.approx(dummy_data.asarray()) == proj.range.zero().asarray()
+
+
+def test_resolution_type():
+    """
+    Compresion defines a default resolution, check that the types are integers.
+    """
+    compression = Compression(mCT())
+    assert isinstance(compression.num_non_arccor_bins, int)
+    assert isinstance(compression.num_of_views, int)
