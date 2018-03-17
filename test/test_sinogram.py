@@ -21,7 +21,7 @@ def test_sinogram():
     scanner = mCT()
     compression, proj, projections = get_projections(scanner)
 
-    sinfo = compression.get_sinogram_info()
+    sinfo = compression._get_sinogram_info()
 
     seg_ind = np.random.randint(len(sinfo))
     segment = sinfo[seg_ind][0]
@@ -39,7 +39,7 @@ def test_wrong_sinogram():
     """
     scanner = mCT()
     compression, proj, projections = get_projections(scanner)
-    sinfo = compression.get_sinogram_info()
+    sinfo = compression._get_sinogram_info()
     segments = [si[0] for si in sinfo]
     maxax = [si[1] for si in sinfo]
     min_seg = np.min(segments)
