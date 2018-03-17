@@ -31,7 +31,7 @@ import stir, stirextra
 
 from odl.operator import Operator
 
-from .setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
+from .io import space_from_stir_domain
 
 
 import numpy as np
@@ -275,7 +275,7 @@ def stir_projector_from_file(volume_file, projection_file):
         A STIR forward projector.
     """
     volume = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file)
-    recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(volume)
+    recon_sp = space_from_stir_domain(volume)
 
     proj_data_in = stir.ProjData.read_from_file(projection_file)
     proj_data = stir.ProjDataInMemory(proj_data_in.get_exam_info(),

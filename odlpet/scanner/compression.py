@@ -1,7 +1,7 @@
 import stir
 import numpy as np
 from odl.discr import uniform_discr
-from ..stir.setup import create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid
+from ..stir.io import space_from_stir_domain
 from ..stir.bindings import ForwardProjectorByBinWrapper
 
 class Compression:
@@ -112,7 +112,7 @@ class Compression:
 
         stir_proj_data = self.get_stir_proj_data(stir_proj_data_info)
 
-        recon_sp = create_DiscreteLP_from_STIR_VoxelsOnCartesianGrid(stir_domain)
+        recon_sp = space_from_stir_domain(stir_domain)
         data_sp = get_range_from_proj_data(stir_proj_data)
 
         return ForwardProjectorByBinWrapper(recon_sp, data_sp, stir_domain, stir_proj_data)
