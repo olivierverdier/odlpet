@@ -154,19 +154,23 @@ class Compression:
 
 
 
-def get_range_from_proj_data(proj_data):
+def get_range_from_proj_data(proj_data, radius=1.):
     """
     Get an ODL codomain (range) from the projection data.
 
     The second coordinate is an angle.
     The last one is a tangential coordinate, normalised between -1 and 1.
+    `radius`: units for the tangential coordinates
     """
-    proj_shape = proj_data.to_array().shape()
-    min_pt = [0, 0, -1.]
-    max_pt = [proj_shape[0], np.pi, 1.]
+    num_sinograms = proj_data.get_num_sinograms()
+    num_views = proj_data.get_num_views()
+    num_tans = proj_data.get_num_tangential_poss()
+    shape = (num_sinograms, num_views, num_tans)
+    min_pt = [0, 0, -radius]
+    max_pt = [num_sinograms, np.pi, radius]
     data_sp = uniform_discr(min_pt=min_pt,
                             max_pt=max_pt,
-                            shape=proj_shape,
+                            shape=shape,
                             axis_labels=("(dz,z)", "φ", "s"),
                             dtype='float32')
     return data_sp
