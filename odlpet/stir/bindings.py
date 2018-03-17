@@ -288,28 +288,7 @@ def stir_projector_from_file(volume_file, projection_file):
     return ForwardProjectorByBinWrapper(recon_sp, data_sp, volume, proj_data)
 
 
-def stir_projector_from_memory(_recon_sp,
-                               _volume,
-                               compression):
-    """
 
-    Parameters
-    ----------
-    _recon_sp : A discreteLP object
-    _volume : A STIR VoxelsOnCatesianGrid object
-    compression: A Compression object
-
-    Returns
-    -------
-    projector : `ForwardProjectorByBinWrapper`
-        A STIR forward projector.
-    """
-    proj_data = compression.get_stir_proj_data()
-
-    data_sp = compression.get_range()
-
-    return ForwardProjectorByBinWrapper(_recon_sp, data_sp, _volume,
-                                        proj_data)
 
 
 if __name__ == '__main__':

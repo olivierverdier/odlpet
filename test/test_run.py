@@ -3,7 +3,7 @@ import odl
 
 
 
-from odlpet.stir.bindings import stir_projector_from_memory, stir_projector_from_file
+from odlpet.stir.bindings import stir_projector_from_file
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
 
