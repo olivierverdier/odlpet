@@ -148,21 +148,6 @@ def get_range_from_proj_data(proj_data):
 def stir_get_projection_data_info(_stir_scanner, _span_num,
                                   _max_num_segments, _num_of_views,
                                   _num_non_arccor_bins, _data_arc_corrected):
-    """
-    ... more documentation needed ...
-    Parameters
-    ----------
-    _stir_scanner
-    _span_num
-    _max_num_segments
-    _num_of_views
-    _num_non_arccor_bins
-    _data_arc_corrected
-
-    Returns
-    -------
-
-    """
     num_rings = _stir_scanner.get_num_rings()
 
     span_num = np.int32(_span_num)
