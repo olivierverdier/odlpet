@@ -25,7 +25,7 @@ class Compression:
         # The maximum number of segment can be 2*NUM_RINGS - 1
         # Setting the followin variable to -1 implies : maximum possible
         # max_num_segments = 3
-        self.max_num_segments = -1
+        self.max_num_segments = None
         # max_num_segments = 2*scanner.num_rings - 1
 
         # If the views is less than half the number of detectors defined in
@@ -42,16 +42,6 @@ class Compression:
         # or in preprocessing. Anyways, STIR will not do that for you, but needs
         # to know.
         self.data_arc_corrected = False
-
-    def get_stir_proj_data_info(self):
-        proj_info = stir_get_projection_data_info(
-            self.scanner.get_stir_scanner(),
-            self.span_num,
-            self.max_num_segments,
-            self.num_of_views,
-            self.num_non_arccor_bins,
-            self.data_arc_corrected)
-        return proj_info
 
     def get_stir_proj_data(self, stir_proj_data_info=None, initialize_to_zero=True):
         if stir_proj_data_info is None:
@@ -127,6 +117,42 @@ class Compression:
 
         return ForwardProjectorByBinWrapper(recon_sp, data_sp, stir_domain, stir_proj_data)
 
+    def get_default_num_tangential(self):
+        if self.data_arc_corrected:
+            num_bins = self.scanner.default_non_arc_cor_bins
+        else:
+            num_bins = self.scanner.max_num_non_arc_cor_bins
+        return num_bins
+
+    def get_num_tangential(self):
+        if self.num_non_arccor_bins is None:
+            result = self.get_default_num_tangential()
+        else:
+            result = self.num_non_arccor_bins
+        return result
+
+    def get_default_max_diff_ring(self):
+        return self.scanner.num_rings - 1
+
+    def get_max_ring_diff(self):
+        # TODO: add this in initialisation method
+        if self.max_num_segments is None:
+            return self.get_default_max_diff_ring()
+        else:
+            return self.max_num_segments
+
+    def get_stir_proj_data_info(self):
+        _stir_scanner = self.scanner.get_stir_scanner()
+        proj_data_info = stir.ProjDataInfo.ProjDataInfoCTI(
+            _stir_scanner,
+            self.span_num,
+            self.get_max_ring_diff(),
+            self.num_of_views,
+            self.get_num_tangential(),
+            self.data_arc_corrected)
+        return proj_data_info
+
+
 
 def get_range_from_proj_data(proj_data):
     """
@@ -144,30 +170,6 @@ def get_range_from_proj_data(proj_data):
                             axis_labels=("(dz,z)", "φ", "s"),
                             dtype='float32')
     return data_sp
-
-def stir_get_projection_data_info(_stir_scanner, _span_num,
-                                  _max_num_segments, _num_of_views,
-                                  _num_non_arccor_bins, _data_arc_corrected):
-    num_rings = _stir_scanner.get_num_rings()
-
-    span_num = np.int32(_span_num)
-    if _max_num_segments == -1:
-        max_ring_diff = np.int32(num_rings -1)
-    else:
-        max_ring_diff = np.int32(_max_num_segments)
-
-    num_of_views = np.int32(_num_of_views)
-    if _data_arc_corrected:
-        num_bins = np.int32(_stir_scanner.get_default_num_arccorrected_bins())
-    else:
-        num_bins = np.int32(_stir_scanner.get_max_num_non_arccorrected_bins())
-
-    return stir.ProjDataInfo.ProjDataInfoCTI(_stir_scanner, span_num,
-                                             max_ring_diff, num_of_views,
-                                             num_bins, _data_arc_corrected)
-
-
-
 
 
 def stir_get_projection_data(_projdata_info,

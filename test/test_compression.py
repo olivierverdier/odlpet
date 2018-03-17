@@ -3,6 +3,7 @@ from odlpet.scanner.compression import Compression
 import odlpet.scanner.scanner as scan
 import stir
 import pytest
+import numpy as np
 
 def test_domain():
     # TODO: add a real test
@@ -43,3 +44,18 @@ def test_resolution_type():
     compression = Compression(mCT())
     assert isinstance(compression.num_non_arccor_bins, int)
     assert isinstance(compression.num_of_views, int)
+
+def test_sinogram_resolution():
+    """
+    Possible to specify a sinogram resolution.
+    """
+    c = Compression(mCT())
+    nb_tans = np.random.randint(1,10)
+    c.num_non_arccor_bins = nb_tans
+    nb_views = np.random.randint(1,10)
+    c.num_of_views = nb_views
+    proj = c.get_projector()
+    resolution = proj.range.shape[-2:]
+    assert resolution == (nb_views, nb_tans)
+
+
