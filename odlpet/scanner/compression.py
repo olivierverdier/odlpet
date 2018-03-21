@@ -113,7 +113,7 @@ class Compression:
         stir_proj_data = self.get_stir_proj_data(stir_proj_data_info)
 
         recon_sp = space_from_stir_domain(stir_domain)
-        data_sp = get_range_from_proj_data(stir_proj_data)
+        data_sp = get_range_from_proj_data(stir_proj_data, radius=self.scanner.det_radius)
 
         return ForwardProjectorByBinWrapper(recon_sp, data_sp, stir_domain, stir_proj_data)
 
