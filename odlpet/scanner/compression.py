@@ -46,7 +46,7 @@ class Compression:
     def get_stir_proj_data(self, stir_proj_data_info=None, initialize_to_zero=True):
         if stir_proj_data_info is None:
             stir_proj_data_info = self.get_stir_proj_data_info()
-        exam_info = get_examination_info()
+        exam_info = stir.ExamInfo()
         proj_data = stir.ProjDataInMemory(exam_info, stir_proj_data_info, initialize_to_zero)
         return proj_data
 
@@ -174,32 +174,4 @@ def get_range_from_proj_data(proj_data, radius=1.):
                             axis_labels=("(dz,z)", "φ", "s"),
                             dtype='float32')
     return data_sp
-
-
-def get_examination_info():
-    """
-    Unless you do motion correction or list-mode reconstruction, default it to [0,1]
-    And don't bother more.
-    In think that a time frame [0, 1] - corresponds to one bed position
-    in a generic way and STIR will ignore it,
-
-    Parameters
-    ----------
-    _time_frame
-
-    Returns
-    -------
-
-    """
-    _time_frame = [0.0, 1.0]
-
-    time_starts = np.array([_time_frame[0]], dtype=np.float64)
-    time_ends = np.array([_time_frame[1]], dtype=np.float64)
-
-    time_frame_def = stir.TimeFrameDefinitions(time_starts, time_ends)
-
-    exam_info = stir.ExamInfo()
-    exam_info.set_time_frame_definitions(time_frame_def)
-
-    return exam_info
 
