@@ -3,6 +3,8 @@ import stirextra
 import numpy as np
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
+from odlpet.scanner.sinogram import get_shape_from_proj_data
+import stir
 
 def get_projections(scanner):
     compression = Compression(scanner)
@@ -53,3 +55,9 @@ def test_wrong_sinogram():
             compression.get_offset(s, a+1)
 
 
+def test_shape():
+    s = stir.Scanner.get_scanner_from_name("ECAT 962")
+    projdatainfo = stir.ProjDataInfo.ProjDataInfoCTI(s,3,9,8,6)
+    projdata = stir.ProjDataInMemory(stir.ExamInfo(), projdatainfo)
+    shape = get_shape_from_proj_data(projdata)
+    assert shape == projdata.to_array().shape()

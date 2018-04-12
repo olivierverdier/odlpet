@@ -35,6 +35,16 @@ def get_offset(segment, axial, info):
     seg_offset = get_segment_offset(segment_reordered_(segment), info)
     return seg_offset + axial
 
+def get_shape_from_proj_data(proj_data):
+    """
+    Get shape from proj_data without converting to an array.
+    """
+    num_sinograms = proj_data.get_num_sinograms()
+    num_views = proj_data.get_num_views()
+    num_tans = proj_data.get_num_tangential_poss()
+    shape = (num_sinograms, num_views, num_tans)
+    return shape
+
 def get_range_from_proj_data(proj_data, radius=1.):
     """
     Get an ODL codomain (range) from the projection data.
@@ -43,12 +53,9 @@ def get_range_from_proj_data(proj_data, radius=1.):
     The last one is a tangential coordinate, normalised between -1 and 1.
     `radius`: units for the tangential coordinates
     """
-    num_sinograms = proj_data.get_num_sinograms()
-    num_views = proj_data.get_num_views()
-    num_tans = proj_data.get_num_tangential_poss()
-    shape = (num_sinograms, num_views, num_tans)
+    shape = get_shape_from_proj_data(proj_data)
     min_pt = [0, 0, -radius]
-    max_pt = [num_sinograms, np.pi, radius]
+    max_pt = [shape[0], np.pi, radius]
     data_sp = odl.discr.uniform_discr(min_pt=min_pt,
                             max_pt=max_pt,
                             shape=shape,
