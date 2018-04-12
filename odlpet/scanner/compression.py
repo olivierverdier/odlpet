@@ -1,8 +1,8 @@
 import stir
 import numpy as np
-from odl.discr import uniform_discr
 from ..stir.io import space_from_stir_domain
 from ..stir.bindings import ForwardProjectorByBinWrapper
+from .sinogram import get_offset, get_range_from_proj_data
 
 class Compression:
     def __init__(self, scanner):
@@ -102,7 +102,6 @@ class Compression:
 
     def get_offset(self, segment, axial):
         info = self._get_sinogram_info()
-        from .sinogram import get_offset
         return get_offset(segment, axial, info)
 
 
@@ -153,25 +152,4 @@ class Compression:
         return proj_data_info
 
 
-
-def get_range_from_proj_data(proj_data, radius=1.):
-    """
-    Get an ODL codomain (range) from the projection data.
-
-    The second coordinate is an angle.
-    The last one is a tangential coordinate, normalised between -1 and 1.
-    `radius`: units for the tangential coordinates
-    """
-    num_sinograms = proj_data.get_num_sinograms()
-    num_views = proj_data.get_num_views()
-    num_tans = proj_data.get_num_tangential_poss()
-    shape = (num_sinograms, num_views, num_tans)
-    min_pt = [0, 0, -radius]
-    max_pt = [num_sinograms, np.pi, radius]
-    data_sp = uniform_discr(min_pt=min_pt,
-                            max_pt=max_pt,
-                            shape=shape,
-                            axis_labels=("(dz,z)", "φ", "s"),
-                            dtype='float32')
-    return data_sp
 
