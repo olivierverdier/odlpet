@@ -46,8 +46,8 @@ class Compression:
     def get_stir_proj_data(self, stir_proj_data_info=None, initialize_to_zero=True):
         if stir_proj_data_info is None:
             stir_proj_data_info = self.get_stir_proj_data_info()
-
-        proj_data = stir_get_projection_data(stir_proj_data_info, initialize_to_zero)
+        exam_info = get_examination_info()
+        proj_data = stir.ProjDataInMemory(exam_info, stir_proj_data_info, initialize_to_zero)
         return proj_data
 
     def get_stir_domain(self, zoom=1., sizes=None, offset=None):
@@ -175,24 +175,6 @@ def get_range_from_proj_data(proj_data, radius=1.):
                             dtype='float32')
     return data_sp
 
-
-def stir_get_projection_data(_projdata_info,
-                             _zeros):
-    """
-    Initialize a ProjData object based on the ProjDataInfo
-    Parameters
-    ----------
-    _projdata_info
-    _zeros
-
-    Returns
-    -------
-
-    """
-
-    exam_info = get_examination_info()
-
-    return stir.ProjDataInMemory(exam_info, _projdata_info, _zeros)
 
 def get_examination_info():
     """
