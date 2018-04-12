@@ -38,22 +38,6 @@ import numpy as np
 
 
 
-class StirVerbosity(object):
-
-    """Context manager setting STIR verbosity to a fixed level."""
-
-    def __init__(self, verbosity):
-        self.verbosity = verbosity
-        self.old_verbosity = None
-
-    def __enter__(self):
-        self.old_verbosity = stir.Verbosity.get()
-        stir.Verbosity.set(self.verbosity)
-
-    def __exit__(self, *_):
-        stir.Verbosity.set(self.old_verbosity)
-
-
 class ForwardProjectorByBinWrapper(Operator):
 
     """A forward projector using STIR.
@@ -63,7 +47,7 @@ class ForwardProjectorByBinWrapper(Operator):
 
     def __init__(self, domain, range, volume, proj_data,
                  _proj_info=None,
-                 projector=None, adjoint=None, verbosity=0):
+                 projector=None, adjoint=None):
         """Initialize a new instance.
 
         Parameters
@@ -82,9 +66,7 @@ class ForwardProjectorByBinWrapper(Operator):
             A pre-initialized projector.
         adjoint : `BackProjectorByBinWrapper`, optional
             A pre-initialized adjoint.
-        verbosity: STIR verbosity
         """
-        self.verbosity = verbosity
         # Check data sizes
         if domain.shape != volume.shape():
             raise ValueError('domain.shape {} does not equal volume shape {}'
@@ -149,8 +131,7 @@ class ForwardProjectorByBinWrapper(Operator):
         self.volume.fill(volume.asarray().flat)
 
         # project
-        with StirVerbosity(self.verbosity):
-            res = call_with_stir_buffer(self.projector.forward_project, self.volume, self.proj_data, volume)
+        res = call_with_stir_buffer(self.projector.forward_project, self.volume, self.proj_data, volume)
 
         # make ODL data
         out[:] = res
@@ -166,7 +147,7 @@ class BackProjectorByBinWrapper(Operator):
     """A back projector using STIR."""
 
     def __init__(self, domain, range, volume, proj_data,
-                 back_projector=None, adjoint=None, verbosity=0):
+                 back_projector=None, adjoint=None):
         """Initialize a new instance.
 
         Parameters
@@ -194,7 +175,6 @@ class BackProjectorByBinWrapper(Operator):
         ----------
         .. _STIR doc: http://stir.sourceforge.net/documentation/doxy/html/
         """
-        self.verbosity = verbosity
         # Check data sizes
         if range.shape != volume.shape():
             raise ValueError('`range.shape` {} does not equal volume shape {}'
@@ -241,8 +221,7 @@ class BackProjectorByBinWrapper(Operator):
 
     def _call(self, projections, out):
         """Back project."""
-        with StirVerbosity(self.verbosity):
-            res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections, clear_buffer=True)
+        res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections, clear_buffer=True)
 
         # make ODL data
         out[:] = res
