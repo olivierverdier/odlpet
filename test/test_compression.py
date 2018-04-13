@@ -1,6 +1,6 @@
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
-import odlpet.scanner.scanner as scan
+from odlpet.scanner.scanner import Scanner
 import stir
 import pytest
 import numpy as np
@@ -27,7 +27,7 @@ def test_data_codomain():
                                       proj_data_in.get_proj_data_info())
     stir_data_info = stir_data.get_proj_data_info()
     stir_scanner = stir_data_info.get_scanner()
-    scanner = scan.Scanner.from_stir_scanner(stir_scanner)
+    scanner = Scanner.from_stir_scanner(stir_scanner)
     comp = Compression(scanner)
     proj = comp.get_projector(stir_proj_data_info=stir_data_info)
     # correct shape
