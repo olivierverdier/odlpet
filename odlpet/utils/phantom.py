@@ -1,5 +1,5 @@
 import numpy as np
-import odl
+import odl.phantom
 
 def cylinders_from_ellipses(ellipses):
     """Create 3d cylinders from ellipses.

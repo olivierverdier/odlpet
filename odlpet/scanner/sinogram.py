@@ -3,7 +3,7 @@ Utility functions related to sinograms.
 """
 
 import numpy as np
-import odl
+from odl.discr import uniform_discr
 
 
 def get_segment_offset(segment_, info):
@@ -56,7 +56,7 @@ def get_range_from_proj_data(proj_data, radius=1.):
     shape = get_shape_from_proj_data(proj_data)
     min_pt = [0, 0, -radius]
     max_pt = [shape[0], np.pi, radius]
-    data_sp = odl.discr.uniform_discr(min_pt=min_pt,
+    data_sp = uniform_discr(min_pt=min_pt,
                             max_pt=max_pt,
                             shape=shape,
                             axis_labels=("(dz,z)", "φ", "s"),
