@@ -1,4 +1,3 @@
-from os import path
 import pytest
 import odl
 from odlpet.stir.io import volume_from_file, projector_from_file
@@ -7,13 +6,15 @@ from odlpet.scanner.compression import get_range_from_proj_data
 from odlpet.stir.bindings import ForwardProjectorByBinWrapper
 import stir, stirextra
 
-base = path.join(path.dirname(path.abspath(__file__)), path.pardir, 'examples', 'tomo', 'data', 'stir')
+from pathlib import Path
+
+base = Path(__file__).parent.parent / 'examples' / 'tomo' / 'data' / 'stir'
 
 
 def test_load():
-    volume_file = str(path.join(base, 'initial.hv'))
-    vol = volume_from_file(volume_file)
-    stir_vol = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file)
+    volume_file = base / 'initial.hv'
+    vol = volume_from_file(volume_file.as_posix())
+    stir_vol = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file.as_posix())
     assert pytest.approx(vol.asarray(), stirextra.to_numpy(stir_vol))
 
 
@@ -41,11 +42,11 @@ def test_file_run():
     """
     # Load STIR input files with data
 
-    volume_file = str(path.join(base, 'initial.hv'))
-    projection_file = str(path.join(base, 'small.hs'))
+    volume_file = base / 'initial.hv'
+    projection_file = base / 'small.hs'
 
     # Make STIR projector
-    proj = projector_from_file(volume_file, projection_file)
+    proj = projector_from_file(volume_file.as_posix(), projection_file.as_posix())
 
     # Create Shepp-Logan phantom
     vol = odl.phantom.shepp_logan(proj.domain, modified=True)
@@ -53,7 +54,7 @@ def test_file_run():
     # Project and show
     result = proj(vol)
 
-    proj_ = _projector_from_file(volume_file, projection_file)
+    proj_ = _projector_from_file(volume_file.as_posix(), projection_file.as_posix())
 
     # check that both projection operators are the same
     assert proj.domain == proj_.domain
