@@ -54,13 +54,11 @@ def projector_from_file(volume_file, projection_file):
     Convenience function to create a projector from a volume and projection
     header files.
     """
-    from ..scanner.scanner import Scanner
     from ..scanner.compression import Compression
     stir_domain = stir_domain_from_file(volume_file)
     proj_data = stir.ProjData.read_from_file(projection_file)
     proj_data_info = proj_data.get_proj_data_info()
-    scanner = Scanner.from_stir_scanner(proj_data_info.get_scanner())
-    comp = Compression(scanner)
+    comp = Compression.from_stir_proj_data_info(proj_data_info)
     proj = comp.get_projector(stir_domain=stir_domain,
                        stir_proj_data_info=proj_data_info)
     return proj

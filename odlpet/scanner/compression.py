@@ -3,6 +3,7 @@ import numpy as np
 from ..stir.io import space_from_stir_domain
 from ..stir.bindings import ForwardProjectorByBinWrapper
 from .sinogram import get_offset, get_range_from_proj_data
+from .scanner import Scanner
 
 class Compression:
     def __init__(self, scanner):
@@ -42,6 +43,16 @@ class Compression:
         # or in preprocessing. Anyways, STIR will not do that for you, but needs
         # to know.
         self.data_arc_corrected = False
+
+    @classmethod
+    def from_stir_proj_data_info(cls, proj_data_info):
+        """
+        Convenience method to obtain a compression object from projection data info.
+        Note that the compression properties are still the default ones,
+        not the ones corresponding to the projection data info.
+        """
+        scanner = Scanner.from_stir_scanner(proj_data_info.get_scanner())
+        return cls(scanner)
 
     def get_stir_proj_data(self, stir_proj_data_info=None, initialize_to_zero=True):
         if stir_proj_data_info is None:
