@@ -1,6 +1,7 @@
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
 from odlpet.scanner.scanner import Scanner
+from odlpet.scanner.sinogram import get_shape_from_proj_data
 import stir
 import pytest
 import numpy as np
@@ -22,16 +23,12 @@ def test_data_codomain():
     """
     header_path = Path(__file__).parent / 'data' / 'small.hs'
     print(header_path)
-    proj_data_in = stir.ProjData.read_from_file(header_path.as_posix())
-    stir_data = stir.ProjDataInMemory(proj_data_in.get_exam_info(),
-                                      proj_data_in.get_proj_data_info())
+    stir_data = stir.ProjData.read_from_file(header_path.as_posix())
     stir_data_info = stir_data.get_proj_data_info()
-    stir_scanner = stir_data_info.get_scanner()
-    scanner = Scanner.from_stir_scanner(stir_scanner)
-    comp = Compression(scanner)
+    comp = Compression.from_stir_proj_data_info(stir_data_info)
     proj = comp.get_projector(stir_proj_data_info=stir_data_info)
     # correct shape
-    assert proj.range.shape == stir_data.to_array().shape()
+    assert proj.range.shape == get_shape_from_proj_data(stir_data)
     # simple check that the projector actually computes something:
     dummy_data = proj(proj.domain.zero())
     assert pytest.approx(dummy_data.asarray()) == proj.range.zero().asarray()
