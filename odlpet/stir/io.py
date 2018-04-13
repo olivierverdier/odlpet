@@ -1,7 +1,7 @@
 import stir, stirextra
 import odl
 
-def voxels_from_file(volume_file):
+def stir_domain_from_file(volume_file):
     return stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file)
 
 def volume_from_voxels(_voxels):
@@ -11,10 +11,10 @@ def volume_from_voxels(_voxels):
     return element
 
 def volume_from_file(volume_file):
-    return volume_from_voxels(voxels_from_file(volume_file))
+    return volume_from_voxels(stir_domain_from_file(volume_file))
 
 def space_from_file(volume_file):
-    _voxels = voxels_from_file(volume_file)
+    _voxels = stir_domain_from_file(volume_file)
     return space_from_stir_domain(_voxels)
 
 def space_from_stir_domain(_voxels):
