@@ -17,49 +17,6 @@ def get_stir_scanner_by_name(name):
     stir_scanner = stir.Scanner.get_scanner_from_name(name)
     return stir_scanner
 
-def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
-                           _det_radius, _ring_spacing,
-                           _average_depth_of_inter,
-                           _voxel_size_xy,
-                           _axial_crystals_per_block = 1, _trans_crystals_per_block= 1,
-                           _axials_blocks_per_bucket = 1, _trans_blocks_per_bucket = 1,
-                           _axial_crystals_per_singles_unit = 1, _trans_crystals_per_singles_unit = 1,
-                           _num_detector_layers = 1, _intrinsic_tilt = 0,
-                           max_num_non_arc_cor_bins=None,
-                           _default_non_arc_cor_bins=None):
-
-    if max_num_non_arc_cor_bins is None:
-        # Roughly speaking number of detectors on the diameter
-        # bin_size = (_det_radius*2) / (_num_dets_per_ring/2)
-        max_num_non_arc_cor_bins = int(_num_dets_per_ring/2)
-
-    if _default_non_arc_cor_bins is None:
-        _default_non_arc_cor_bins = max_num_non_arc_cor_bins
-
-    # TODO: use "Userdefined" instead? (should not change much)
-    scanner = stir.Scanner.get_scanner_from_name('')
-
-    scanner.set_num_rings(np.int32(_num_rings))
-    scanner.set_num_detectors_per_ring(np.int32(_num_dets_per_ring))
-    scanner.set_default_bin_size(np.float32(_voxel_size_xy))
-    scanner.set_default_num_arccorrected_bins(np.int32(_default_non_arc_cor_bins))
-    scanner.set_default_intrinsic_tilt(np.float32(_intrinsic_tilt))
-    scanner.set_inner_ring_radius(np.float32(_det_radius))
-    scanner.set_ring_spacing(np.float32(_ring_spacing))
-    scanner.set_average_depth_of_interaction(np.float32(_average_depth_of_inter))
-    scanner.set_max_num_non_arccorrected_bins(np.int32(max_num_non_arc_cor_bins))
-    scanner.set_num_axial_blocks_per_bucket(np.int32(_axials_blocks_per_bucket))
-    scanner.set_num_transaxial_blocks_per_bucket(np.int32(_trans_blocks_per_bucket))
-    scanner.set_num_axial_crystals_per_block(np.int32(_axial_crystals_per_block))
-    scanner.set_num_transaxial_crystals_per_block(np.int32(_trans_crystals_per_block))
-    scanner.set_num_axial_crystals_per_singles_unit(np.int32(_axial_crystals_per_singles_unit))
-    scanner.set_num_transaxial_crystals_per_singles_unit(np.int32(_trans_crystals_per_singles_unit))
-    scanner.set_num_detector_layers(np.int32(_num_detector_layers))
-
-    if _check_consistency(scanner):
-        return scanner
-    else:
-        raise TypeError('Something is wrong in the scanner geometry.')
 
 
 def _check_consistency(_scanner):
@@ -67,31 +24,65 @@ def _check_consistency(_scanner):
 
 class Scanner():
 
+    # some reasonable default values
+    num_rings = 1
+    intrinsic_tilt = 0.
+    num_detector_layers = 1
+    trans_blocks_per_bucket = 0
+    axials_blocks_per_bucket = 0
+    trans_crystals_per_block = 0
+    axial_crystals_per_block = 0
+    trans_crystals_per_singles_unit = -1
+    axial_crystals_per_singles_unit = -1
+
     max_num_non_arc_cor_bins = None
     default_non_arc_cor_bins = None
 
+    # some less reasonable default values
+    num_dets_per_ring = 512
+    det_radius = 102
+    ring_spacing= 1.35
+    average_depth_of_inter = .7
+    voxel_size_xy = 0.3
+
     def get_stir_scanner(self):
+        """
+        Retrun a STIR scanner object corresponding to this object.
+        """
 
-        # Now create the STIR geometry
-        stir_scanner = stir_get_STIR_geometry(
-            self.num_rings,
-            self.num_dets_per_ring,
-            self.det_radius,
-            self.ring_spacing,
-            self.average_depth_of_inter,
-            self.voxel_size_xy,
-            self.axial_crystals_per_block,
-            self.trans_crystals_per_block,
-            self.axials_blocks_per_bucket,
-            self.trans_blocks_per_bucket,
-            self.axial_crystals_per_singles_unit,
-            self.trans_crystals_per_singles_unit,
-            self.num_detector_layers,
-            self.intrinsic_tilt,
-            self.max_num_non_arc_cor_bins,
-            self.default_non_arc_cor_bins)
+        # TODO: should be moved to proper accessor methods
+        if self.max_num_non_arc_cor_bins is None:
+            # Roughly speaking number of detectors on the diameter
+            # bin_size = (self.det_radius*2) / (self.num_dets_per_ring/2)
+            self.max_num_non_arc_cor_bins = int(self.num_dets_per_ring/2)
 
-        return stir_scanner
+        if self.default_non_arc_cor_bins is None:
+            self.default_non_arc_cor_bins = self.max_num_non_arc_cor_bins
+
+        # TODO: use "Userdefined" instead? (should not change much)
+        scanner = stir.Scanner.get_scanner_from_name('')
+
+        scanner.set_num_rings(np.int32(self.num_rings))
+        scanner.set_num_detectors_per_ring(np.int32(self.num_dets_per_ring))
+        scanner.set_default_bin_size(np.float32(self.voxel_size_xy))
+        scanner.set_default_num_arccorrected_bins(np.int32(self.default_non_arc_cor_bins))
+        scanner.set_default_intrinsic_tilt(np.float32(self.intrinsic_tilt))
+        scanner.set_inner_ring_radius(np.float32(self.det_radius))
+        scanner.set_ring_spacing(np.float32(self.ring_spacing))
+        scanner.set_average_depth_of_interaction(np.float32(self.average_depth_of_inter))
+        scanner.set_max_num_non_arccorrected_bins(np.int32(self.max_num_non_arc_cor_bins))
+        scanner.set_num_axial_blocks_per_bucket(np.int32(self.axials_blocks_per_bucket))
+        scanner.set_num_transaxial_blocks_per_bucket(np.int32(self.trans_blocks_per_bucket))
+        scanner.set_num_axial_crystals_per_block(np.int32(self.axial_crystals_per_block))
+        scanner.set_num_transaxial_crystals_per_block(np.int32(self.trans_crystals_per_block))
+        scanner.set_num_axial_crystals_per_singles_unit(np.int32(self.axial_crystals_per_singles_unit))
+        scanner.set_num_transaxial_crystals_per_singles_unit(np.int32(self.trans_crystals_per_singles_unit))
+        scanner.set_num_detector_layers(np.int32(self.num_detector_layers))
+
+        if _check_consistency(scanner):
+            return scanner
+        else:
+            raise TypeError('Something is wrong in the scanner geometry.')
 
     @classmethod
     def from_stir_scanner(cls, stir_scanner):
