@@ -8,20 +8,6 @@ def get_scanner_names():
 
 SCANNER_NAMES = get_scanner_names()
 
-def get_stir_scanner_by_name(name):
-    """
-    Get a STIR scanner by name.
-    """
-    if name not in SCANNER_NAMES:
-        raise ValueError("No default scanner of name {}".format(name))
-    stir_scanner = stir.Scanner.get_scanner_from_name(name)
-    return stir_scanner
-
-
-
-def _check_consistency(_scanner):
-    return _scanner.check_consistency() == stir.Succeeded(stir.Succeeded.yes)
-
 class Scanner():
 
     # some reasonable default values
@@ -116,8 +102,20 @@ class Scanner():
         """
         Return a Scanner object from a named Scanner.
         """
-        return cls.from_stir_scanner(get_stir_scanner_by_name(name))
+        return cls.from_stir_scanner(_get_stir_scanner_by_name(name))
 
+
+def _get_stir_scanner_by_name(name):
+    """
+    Get a STIR scanner by name.
+    """
+    if name not in SCANNER_NAMES:
+        raise ValueError("No default scanner of name {}".format(name))
+    stir_scanner = stir.Scanner.get_scanner_from_name(name)
+    return stir_scanner
+
+def _check_consistency(_scanner):
+    return _scanner.check_consistency() == stir.Succeeded(stir.Succeeded.yes)
 
 
 class mCT(Scanner):

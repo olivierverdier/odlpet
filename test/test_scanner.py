@@ -44,7 +44,7 @@ def test_conversion():
     """
     for scan_name in scan.SCANNER_NAMES:
         print(scan_name)
-        stir_scan = scan.get_stir_scanner_by_name(scan_name)
+        stir_scan = scan._get_stir_scanner_by_name(scan_name)
         stir_scan.check_consistency()
         py_scan = scan.Scanner.from_stir_scanner(stir_scan)
         try:
