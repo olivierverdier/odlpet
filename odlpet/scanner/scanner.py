@@ -8,7 +8,7 @@ def get_scanner_names():
 
 SCANNER_NAMES = get_scanner_names()
 
-def _get_scanner_by_name(name):
+def get_stir_scanner_by_name(name):
     """
     Get a STIR scanner by name.
     """
@@ -16,38 +16,6 @@ def _get_scanner_by_name(name):
         raise ValueError("No default scanner of name {}".format(name))
     stir_scanner = stir.Scanner.get_scanner_from_name(name)
     return stir_scanner
-
-def _scanner_from_stir(stir_scanner):
-    """
-    Convert a STIR scanner to a Scanner object.
-    """
-    scanner = Scanner()
-    scanner.num_rings = stir_scanner.get_num_rings()
-    scanner.num_dets_per_ring = stir_scanner.get_num_detectors_per_ring()
-    scanner.voxel_size_xy = stir_scanner.get_default_bin_size()
-    scanner.default_non_arc_cor_bins = stir_scanner.get_default_num_arccorrected_bins()
-    scanner.intrinsic_tilt = stir_scanner.get_default_intrinsic_tilt()
-    scanner.det_radius = stir_scanner.get_inner_ring_radius()
-    scanner.ring_spacing = stir_scanner.get_ring_spacing()
-    scanner.average_depth_of_inter = stir_scanner.get_average_depth_of_interaction()
-    scanner.max_num_non_arc_cor_bins = stir_scanner.get_max_num_non_arccorrected_bins()
-    scanner.axials_blocks_per_bucket = stir_scanner.get_num_axial_blocks_per_bucket()
-    scanner.trans_blocks_per_bucket = stir_scanner.get_num_transaxial_blocks_per_bucket()
-    scanner.axial_crystals_per_block = stir_scanner.get_num_axial_crystals_per_block()
-    scanner.trans_crystals_per_block = stir_scanner.get_num_transaxial_crystals_per_block()
-    scanner.axial_crystals_per_singles_unit = stir_scanner.get_num_axial_crystals_per_singles_unit()
-    scanner.trans_crystals_per_singles_unit = stir_scanner.get_num_transaxial_crystals_per_singles_unit()
-    scanner.num_detector_layers = stir_scanner.get_num_detector_layers()
-    return scanner
-
-
-
-def get_scanner_by_name(name):
-    """
-    Return a Scanner object from a named Scanner.
-    """
-    return _scanner_from_stir(_get_scanner_by_name(name))
-
 
 def stir_get_STIR_geometry(_num_rings, _num_dets_per_ring,
                            _det_radius, _ring_spacing,
@@ -124,6 +92,41 @@ class Scanner():
             self.default_non_arc_cor_bins)
 
         return stir_scanner
+
+    @classmethod
+    def from_stir_scanner(cls, stir_scanner):
+        """
+        Convert a STIR scanner to a Scanner object.
+        """
+        scanner = Scanner()
+        scanner.num_rings = stir_scanner.get_num_rings()
+        scanner.num_dets_per_ring = stir_scanner.get_num_detectors_per_ring()
+        scanner.voxel_size_xy = stir_scanner.get_default_bin_size()
+        scanner.default_non_arc_cor_bins = stir_scanner.get_default_num_arccorrected_bins()
+        scanner.intrinsic_tilt = stir_scanner.get_default_intrinsic_tilt()
+        scanner.det_radius = stir_scanner.get_inner_ring_radius()
+        scanner.ring_spacing = stir_scanner.get_ring_spacing()
+        scanner.average_depth_of_inter = stir_scanner.get_average_depth_of_interaction()
+        scanner.max_num_non_arc_cor_bins = stir_scanner.get_max_num_non_arccorrected_bins()
+        scanner.axials_blocks_per_bucket = stir_scanner.get_num_axial_blocks_per_bucket()
+        scanner.trans_blocks_per_bucket = stir_scanner.get_num_transaxial_blocks_per_bucket()
+        scanner.axial_crystals_per_block = stir_scanner.get_num_axial_crystals_per_block()
+        scanner.trans_crystals_per_block = stir_scanner.get_num_transaxial_crystals_per_block()
+        scanner.axial_crystals_per_singles_unit = stir_scanner.get_num_axial_crystals_per_singles_unit()
+        scanner.trans_crystals_per_singles_unit = stir_scanner.get_num_transaxial_crystals_per_singles_unit()
+        scanner.num_detector_layers = stir_scanner.get_num_detector_layers()
+        return scanner
+
+
+
+
+    @classmethod
+    def from_name(cls, name):
+        """
+        Return a Scanner object from a named Scanner.
+        """
+        return cls.from_stir_scanner(get_stir_scanner_by_name(name))
+
 
 
 class mCT(Scanner):
