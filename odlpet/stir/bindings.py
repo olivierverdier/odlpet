@@ -14,8 +14,6 @@ Back and forward projectors for PET.
 objects of STIR projectors and back-projectors, these can be used to wrap a
 given projector.
 
-`stir_projector_from_file` allows users a easy way to create a
-`ForwardProjectorByBinWrapper` by giving file paths to the required templates.
 
 References
 ----------
@@ -30,8 +28,6 @@ import stir, stirextra
 
 
 from odl.operator import Operator
-
-from .io import space_from_stir_domain
 
 
 import numpy as np
@@ -233,38 +229,6 @@ def call_with_stir_buffer(function, b_in, b_out, v_in, clear_buffer=False):
     function(b_out, b_in)
     return stirextra.to_numpy(b_out)
 
-
-def stir_projector_from_file(volume_file, projection_file):
-    """Create a STIR projector from given template files.
-
-    Parameters
-    ----------
-    volume_file : string
-        Full file path to the STIR input file containing information on the
-        volume. This is usually a '.hv' file. For STIR reasons,
-        a '.v' file is also needed.
-    projection_file : string
-        Full file path to the STIR input file with information on the
-        projection data. This is usually a '.hs' file. For STIR reasons,
-        a '.s' file is also needed.
-
-    Returns
-    -------
-    projector : `ForwardProjectorByBinWrapper`
-        A STIR forward projector.
-    """
-    volume = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file)
-    recon_sp = space_from_stir_domain(volume)
-
-    proj_data_in = stir.ProjData.read_from_file(projection_file)
-    proj_data = stir.ProjDataInMemory(proj_data_in.get_exam_info(),
-                                      proj_data_in.get_proj_data_info())
-
-
-    from ..scanner.compression import get_range_from_proj_data
-    data_sp = get_range_from_proj_data(proj_data)
-
-    return ForwardProjectorByBinWrapper(recon_sp, data_sp, volume, proj_data)
 
 
 

@@ -14,7 +14,7 @@ from os import path
 import stir
 import odl
 
-from odlpet.stir.bindings import stir_projector_from_file
+from odlpet.stir.io import projector_from_file
 
 # Load STIR input files with data
 base = path.join(path.dirname(path.abspath(__file__)), 'data', 'stir')
@@ -23,7 +23,7 @@ volume_file = str(path.join(base, 'initial.hv'))
 projection_file = str(path.join(base, 'small.hs'))
 
 # Make STIR projector
-proj = stir_projector_from_file(volume_file, projection_file)
+proj = projector_from_file(volume_file, projection_file)
 
 # Create Shepp-Logan phantom
 vol = odl.phantom.shepp_logan(proj.domain, modified=True)

@@ -11,7 +11,7 @@
 from __future__ import division
 import os.path as pth
 import odl
-from odlpet.stir.bindings import stir_projector_from_file
+from odlpet.stir.io import projector_from_file
 
 
 
@@ -23,7 +23,7 @@ def test_from_file():
     projection_file = str(pth.join(base, 'small.hs'))
 
     # Create a STIR projector from file data.
-    proj = stir_projector_from_file(volume_file, projection_file)
+    proj = projector_from_file(volume_file, projection_file)
 
     # Create SPECT phantom
     vol = odl.phantom.derenzo_sources(proj.domain)

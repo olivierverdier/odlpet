@@ -49,3 +49,20 @@ def space_from_stir_domain(_voxels):
             min_pt=vol_min, max_pt=vol_max, shape=vox_num,
             dtype='float32')
 
+def projector_from_file(volume_file, projection_file):
+    """
+    Convenience function to create a projector from a volume and projection
+    header files.
+    """
+    from ..scanner.scanner import _scanner_from_stir
+    from ..scanner.compression import Compression
+    stir_domain = stir_domain_from_file(volume_file)
+    proj_data = stir.ProjData.read_from_file(projection_file)
+    proj_data_info = proj_data.get_proj_data_info()
+    scanner = _scanner_from_stir(proj_data_info.get_scanner())
+    comp = Compression(scanner)
+    proj = comp.get_projector(stir_domain=stir_domain,
+                       stir_proj_data_info=proj_data_info)
+    return proj
+
+
