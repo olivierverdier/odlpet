@@ -1,6 +1,3 @@
-from os import path
-import odl
-
 from odlpet.stir.verbosity import StirVerbosity
 from odlpet.scanner.scanner import mCT
 from odlpet.scanner.compression import Compression
