@@ -1,6 +1,6 @@
 import stir
 import numpy as np
-from ..stir.io import space_from_stir_domain
+from ..stir.space import space_from_stir_domain
 from ..stir.bindings import ForwardProjectorByBinWrapper
 from .sinogram import get_offset, get_range_from_proj_data
 from .scanner import Scanner

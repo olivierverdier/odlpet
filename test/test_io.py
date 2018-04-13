@@ -1,7 +1,8 @@
 from os import path
 import pytest
 import odl
-from odlpet.stir.io import volume_from_file, projector_from_file, space_from_stir_domain
+from odlpet.stir.io import volume_from_file, projector_from_file
+from odlpet.stir.space import space_from_stir_domain
 from odlpet.scanner.compression import get_range_from_proj_data
 from odlpet.stir.bindings import ForwardProjectorByBinWrapper
 import stir, stirextra
