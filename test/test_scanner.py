@@ -1,10 +1,9 @@
-import stir
 import pytest
 
 import odlpet.scanner.scanner as scan
 
 def test_consistency():
-    ss = stir.Scanner.get_scanner_from_name('Userdefined')
+    ss = scan._get_stir_scanner_by_name('Userdefined')
     ss.set_num_axial_crystals_per_block(10)
     ss.set_num_axial_blocks_per_bucket(10)
     ss.set_num_rings(34)
@@ -14,7 +13,7 @@ def test_consistency():
 def test_names():
     names = scan.get_scanner_names()
     for name in names:
-        stir_scan = stir.Scanner.get_scanner_from_name(name)
+        stir_scan = scan._get_stir_scanner_by_name(name)
         assert stir_scan.get_name() == name
 
 
