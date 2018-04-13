@@ -24,7 +24,12 @@ the STIR classes used here.
 .. _STIR doc: http://stir.sourceforge.net/documentation/doxy/html/
 """
 
-import stir, stirextra
+from stirextra import to_numpy
+from stir import (
+    ProjMatrixByBinUsingRayTracing,
+    ForwardProjectorByBinUsingProjMatrixByBin,
+    BackProjectorByBinUsingProjMatrixByBin,
+)
 
 
 from odl.operator import Operator
@@ -86,7 +91,7 @@ class ForwardProjectorByBinWrapper(Operator):
 
         # Create forward projection by matrix
         if projector is None:
-            self.proj_matrix = stir.ProjMatrixByBinUsingRayTracing()
+            self.proj_matrix = ProjMatrixByBinUsingRayTracing()
             self.proj_matrix.set_do_symmetry_90degrees_min_phi(True)
             self.proj_matrix.set_do_symmetry_180degrees_min_phi(True)
             self.proj_matrix.set_do_symmetry_swap_s(True)
@@ -96,14 +101,14 @@ class ForwardProjectorByBinWrapper(Operator):
             self.proj_matrix.set_up(self.proj_data_info, self.volume)
 
 
-            self.projector = stir.ForwardProjectorByBinUsingProjMatrixByBin(self.proj_matrix)
+            self.projector = ForwardProjectorByBinUsingProjMatrixByBin(self.proj_matrix)
 
             self.projector.set_up(self.proj_data_info, self.volume)
 
             # If no adjoint was given, we initialize a projector here to
             # save time.
             if adjoint is None:
-                back_projector = stir.BackProjectorByBinUsingProjMatrixByBin(
+                back_projector = BackProjectorByBinUsingProjMatrixByBin(
                     self.proj_matrix)
                 back_projector.set_up(self.proj_data_info,
                                        self.volume)
@@ -191,15 +196,15 @@ class BackProjectorByBinWrapper(Operator):
 
         # Create forward projection by matrix
         if back_projector is None:
-            proj_matrix = stir.ProjMatrixByBinUsingRayTracing()
+            proj_matrix = ProjMatrixByBinUsingRayTracing()
 
-            self.back_projector = stir.BackProjectorByBinUsingProjMatrixByBin(
+            self.back_projector = BackProjectorByBinUsingProjMatrixByBin(
                 proj_matrix)
             self.back_projector.set_up(self.proj_data.get_proj_data_info(),
                                        self.volume)
 
             if adjoint is None:
-                projector = stir.ForwardProjectorByBinUsingProjMatrixByBin(
+                projector = ForwardProjectorByBinUsingProjMatrixByBin(
                     proj_matrix)
                 projector.set_up(self.proj_data_info, self.volume)
 
@@ -227,5 +232,5 @@ def call_with_stir_buffer(function, b_in, b_out, v_in, clear_buffer=False):
     if clear_buffer:
         b_out.fill(0)
     function(b_out, b_in)
-    return stirextra.to_numpy(b_out)
+    return to_numpy(b_out)
 

@@ -1,4 +1,4 @@
-import stir
+from stir import Verbosity as _Verbosity
 
 class StirVerbosity(object):
 
@@ -9,9 +9,9 @@ class StirVerbosity(object):
         self.old_verbosity = None
 
     def __enter__(self):
-        self.old_verbosity = stir.Verbosity.get()
-        stir.Verbosity.set(self.verbosity)
+        self.old_verbosity = _Verbosity.get()
+        _Verbosity.set(self.verbosity)
 
     def __exit__(self, *_):
-        stir.Verbosity.set(self.old_verbosity)
+        _Verbosity.set(self.old_verbosity)
 

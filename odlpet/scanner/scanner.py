@@ -1,8 +1,8 @@
-import stir
+from stir import Scanner as _Scanner, Succeeded as _Succeeded
 import numpy as np
 
 def get_scanner_names():
-    all_names = stir.Scanner_list_all_names()
+    all_names = _Scanner.list_all_names()
     names = [name_.split(',')[0].rstrip() for name_ in all_names.split('\n')[:-1]]
     return names
 
@@ -46,7 +46,7 @@ class Scanner():
             self.default_non_arc_cor_bins = self.max_num_non_arc_cor_bins
 
         # TODO: use "Userdefined" instead? (should not change much)
-        scanner = stir.Scanner.get_scanner_from_name('')
+        scanner = _Scanner.get_scanner_from_name('')
 
         scanner.set_num_rings(np.int32(self.num_rings))
         scanner.set_num_detectors_per_ring(np.int32(self.num_dets_per_ring))
@@ -111,11 +111,11 @@ def _get_stir_scanner_by_name(name):
     """
     if name not in SCANNER_NAMES:
         raise ValueError("No default scanner of name {}".format(name))
-    stir_scanner = stir.Scanner.get_scanner_from_name(name)
+    stir_scanner = _Scanner.get_scanner_from_name(name)
     return stir_scanner
 
 def _check_consistency(_scanner):
-    return _scanner.check_consistency() == stir.Succeeded(stir.Succeeded.yes)
+    return _scanner.check_consistency() == _Succeeded(_Succeeded.yes)
 
 
 class mCT(Scanner):

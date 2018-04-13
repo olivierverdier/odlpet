@@ -1,9 +1,15 @@
-import stir
 import numpy as np
 from ..stir.space import space_from_stir_domain
 from ..stir.bindings import ForwardProjectorByBinWrapper
 from .sinogram import get_offset, get_range_from_proj_data
 from .scanner import Scanner
+
+from stir import (FloatCartesianCoordinate3D,
+                  IntCartesianCoordinate3D,
+                  FloatVoxelsOnCartesianGrid,
+                  ProjDataInMemory,
+                  ExamInfo,
+                  ProjDataInfo)
 
 class Compression:
     def __init__(self, scanner):
@@ -57,8 +63,8 @@ class Compression:
     def get_stir_proj_data(self, stir_proj_data_info=None, initialize_to_zero=True):
         if stir_proj_data_info is None:
             stir_proj_data_info = self.get_stir_proj_data_info()
-        exam_info = stir.ExamInfo()
-        proj_data = stir.ProjDataInMemory(exam_info, stir_proj_data_info, initialize_to_zero)
+        exam_info = ExamInfo()
+        proj_data = ProjDataInMemory(exam_info, stir_proj_data_info, initialize_to_zero)
         return proj_data
 
     def get_stir_domain(self, zoom=1., sizes=None, offset=None):
@@ -95,15 +101,15 @@ class Compression:
         """
         if sizes is None:
             sizes = [-1,-1,-1]
-        sizes_ = stir.IntCartesianCoordinate3D(*sizes)
+        sizes_ = IntCartesianCoordinate3D(*sizes)
 
         if offset is None:
             offset = [0.,0.,0.]
-        offset_ = stir.FloatCartesianCoordinate3D(*offset)
+        offset_ = FloatCartesianCoordinate3D(*offset)
 
         proj_info = self.get_stir_proj_data_info()
 
-        return stir.FloatVoxelsOnCartesianGrid(proj_info, np.float32(zoom), offset_, sizes_)
+        return FloatVoxelsOnCartesianGrid(proj_info, np.float32(zoom), offset_, sizes_)
 
     def _get_sinogram_info(self):
         proj_info = self.get_stir_proj_data_info()
@@ -153,7 +159,7 @@ class Compression:
 
     def get_stir_proj_data_info(self):
         _stir_scanner = self.scanner.get_stir_scanner()
-        proj_data_info = stir.ProjDataInfo.ProjDataInfoCTI(
+        proj_data_info = ProjDataInfo.ProjDataInfoCTI(
             _stir_scanner,
             self.span_num,
             self.get_max_ring_diff(),
