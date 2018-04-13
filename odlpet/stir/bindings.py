@@ -31,6 +31,7 @@ from stir import (
     BackProjectorByBinUsingProjMatrixByBin,
 )
 
+from ..scanner.sinogram import get_shape_from_proj_data
 
 from odl.operator import Operator
 
@@ -72,8 +73,7 @@ class ForwardProjectorByBinWrapper(Operator):
         if domain.shape != volume.shape():
             raise ValueError('domain.shape {} does not equal volume shape {}'
                              ''.format(domain.shape, volume.shape()))
-        # TODO: improve
-        proj_shape = proj_data.to_array().shape()
+        proj_shape = get_shape_from_proj_data(proj_data)
         if range.shape != proj_shape:
             raise ValueError('range.shape {} does not equal proj shape {}'
                              ''.format(range.shape, proj_shape))
@@ -180,8 +180,7 @@ class BackProjectorByBinWrapper(Operator):
         if range.shape != volume.shape():
             raise ValueError('`range.shape` {} does not equal volume shape {}'
                              ''.format(range.shape, volume.shape()))
-        # TODO: improve
-        proj_shape = proj_data.to_array().shape()
+        proj_shape = get_shape_from_proj_data(proj_data)
         if domain.shape != proj_shape:
             raise ValueError('`domain.shape` {} does not equal proj shape {}'
                              ''.format(range.shape, proj_shape))
