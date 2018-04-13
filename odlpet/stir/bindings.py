@@ -229,12 +229,3 @@ def call_with_stir_buffer(function, b_in, b_out, v_in, clear_buffer=False):
     function(b_out, b_in)
     return stirextra.to_numpy(b_out)
 
-
-
-
-
-
-if __name__ == '__main__':
-    # pylint: disable=wrong-import-position
-    from odl.util.testutils import run_doctests
-    run_doctests()
