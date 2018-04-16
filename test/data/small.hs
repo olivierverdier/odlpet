@@ -1,5 +1,4 @@
 !INTERFILE  :=
-name of data file := small.s
 originating system := RATPET
 !GENERAL DATA :=
 !GENERAL IMAGE DATA :=
