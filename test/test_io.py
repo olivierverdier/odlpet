@@ -8,7 +8,7 @@ import stir, stirextra
 
 from pathlib import Path
 
-base = Path(__file__).parent.parent / 'examples' / 'tomo' / 'data' / 'stir'
+base = Path(__file__).parent.parent / 'examples' / 'data' / 'stir'
 
 
 def test_load():
