@@ -27,13 +27,13 @@ class Scanner():
     # some less reasonable default values
     num_dets_per_ring = 512
     det_radius = 102
-    ring_spacing= 1.35
+    ring_spacing = 1.35
     average_depth_of_inter = .7
     voxel_size_xy = 0.3
 
     def get_stir_scanner(self):
         """
-        Retrun a STIR scanner object corresponding to this object.
+        Return a STIR scanner object corresponding to this object.
         """
 
         # TODO: should be moved to proper accessor methods

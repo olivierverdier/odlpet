@@ -18,7 +18,7 @@ class Compression:
         """
         self.scanner = scanner
         # Axial compression (Span)
-        # Reduction of the number of sinograms at different ring dierences
+        # Reduction of the number of sinograms at different ring differences
         # as shown in STIR glossary.
         # Span is a number used by CTI to say how much axial
         # compression has been used.  It is always an odd number.
