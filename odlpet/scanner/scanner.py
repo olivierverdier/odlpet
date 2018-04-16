@@ -45,8 +45,7 @@ class Scanner():
         if self.default_non_arc_cor_bins is None:
             self.default_non_arc_cor_bins = self.max_num_non_arc_cor_bins
 
-        # TODO: use "Userdefined" instead? (should not change much)
-        scanner = _Scanner.get_scanner_from_name('')
+        scanner = _get_stir_scanner_by_name('Userdefined')
 
         scanner.set_num_rings(np.int32(self.num_rings))
         scanner.set_num_detectors_per_ring(np.int32(self.num_dets_per_ring))
