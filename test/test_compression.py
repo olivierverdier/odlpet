@@ -55,4 +55,9 @@ def test_sinogram_resolution():
     resolution = proj.range.shape[-2:]
     assert resolution == (nb_views, nb_tans)
 
+def test_domain_labels():
+    c = Compression(Scanner())
+    proj = c.get_projector()
+    labels = proj.domain.axis_labels
+    assert labels == ('z', 'y', 'x')
 

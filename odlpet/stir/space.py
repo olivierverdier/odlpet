@@ -29,5 +29,6 @@ def space_from_stir_domain(stir_domain):
     vol_min = [stir_vol_min[1], stir_vol_min[2],stir_vol_min[3]]
 
     return uniform_discr(
-            min_pt=vol_min, max_pt=vol_max, shape=vox_num,
-            dtype='float32')
+        min_pt=vol_min, max_pt=vol_max, shape=vox_num,
+        axis_labels=["z", "y", "x"],
+        dtype='float32')
