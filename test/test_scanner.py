@@ -11,7 +11,7 @@ def test_consistency():
     assert not scan._check_consistency(ss)
 
 def test_names():
-    names = scan.get_scanner_names()
+    names = scan._get_scanner_names()
     for name in names:
         stir_scan = scan._get_stir_scanner_by_name(name)
         assert stir_scan.get_name() == name

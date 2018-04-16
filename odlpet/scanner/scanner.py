@@ -1,13 +1,6 @@
 from stir import Scanner as _Scanner, Succeeded as _Succeeded
 import numpy as np
 
-def get_scanner_names():
-    all_names = _Scanner.list_all_names()
-    names = [name_.split(',')[0].rstrip() for name_ in all_names.split('\n')[:-1]]
-    return names
-
-SCANNER_NAMES = get_scanner_names()
-
 class Scanner():
 
     # some reasonable default values
@@ -116,6 +109,12 @@ def _get_stir_scanner_by_name(name):
 def _check_consistency(_scanner):
     return _scanner.check_consistency() == _Succeeded(_Succeeded.yes)
 
+def _get_scanner_names():
+    all_names = _Scanner.list_all_names()
+    names = [name_.split(',')[0].rstrip() for name_ in all_names.split('\n')[:-1]]
+    return names
+
+SCANNER_NAMES = _get_scanner_names()
 
 class mCT(Scanner):
     # Detector x size in mm - plus the ring difference
