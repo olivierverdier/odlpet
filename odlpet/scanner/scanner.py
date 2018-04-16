@@ -13,6 +13,7 @@ class Scanner():
     axial_crystals_per_block = 0
     trans_crystals_per_singles_unit = -1
     axial_crystals_per_singles_unit = -1
+    average_depth_of_inter = 0
 
     max_num_non_arc_cor_bins = None
     default_non_arc_cor_bins = None
@@ -21,7 +22,6 @@ class Scanner():
     num_dets_per_ring = 512
     det_radius = 102
     ring_spacing = 1.35
-    average_depth_of_inter = .7
     voxel_size_xy = 0.3
 
     def get_stir_scanner(self):
