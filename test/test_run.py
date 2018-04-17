@@ -17,5 +17,3 @@ def test_simple_run():
     compression = Compression(scanner)
     proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=.1))
     result = proj(proj.domain.one())
-
-# TODO: test that loading from file or memory gives the same result.

@@ -1,19 +1,38 @@
-from odlpet.scanner.scanner import mCT
+from odlpet.scanner.scanner import mCT, Scanner
 from odlpet.scanner.compression import Compression
-from odlpet.scanner.scanner import Scanner
 from odlpet.scanner.sinogram import get_shape_from_proj_data
 import stir
 import pytest
 import numpy as np
 
 def test_domain():
-    # TODO: add a real test
+    from odlpet.stir.space import space_from_stir_domain
     s = mCT()
     c = Compression(s)
     domain = c.get_stir_domain()
-    domain = c.get_stir_domain(1.)
-    domain = c.get_stir_domain(sizes=[2,3,4])
-    domain = c.get_stir_domain(offset=[2.,3.,1])
+    space = space_from_stir_domain(domain)
+    shape = space.shape
+    smin, smax = space.min_pt, space.max_pt
+
+    domain_z = c.get_stir_domain(zoom=2.)
+    space_z = space_from_stir_domain(domain_z)
+    assert pytest.approx(space_z.min_pt) == smin
+    # assert pytest.approx(space_z.max_pt) == smax
+    assert space_z.shape[0] == shape[0]
+    for i in [1,2]:
+        assert space_z.shape[i] // 2 == shape[i] - 1
+
+    new_shape = (2,3,4)
+    domain_s = c.get_stir_domain(sizes=new_shape)
+    space_s = space_from_stir_domain(domain_s)
+    assert space_s.shape == new_shape
+
+    offset = [10.,30.,20.]
+    domain_o = c.get_stir_domain(offset=offset)
+    space_o = space_from_stir_domain(domain_o)
+    assert space_o.shape == shape
+    assert pytest.approx(space_o.min_pt - smin) == offset
+    assert pytest.approx(space_o.max_pt - smax) == offset
 
 from pathlib import Path
 
