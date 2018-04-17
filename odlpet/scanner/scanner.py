@@ -46,7 +46,7 @@ class Scanner():
         if _check_consistency(scanner):
             return scanner
         else:
-            raise TypeError('Something is wrong in the scanner geometry.')
+            raise ValueError('Something is wrong in the scanner geometry.')
 
     @classmethod
     def from_stir_scanner(cls, stir_scanner):

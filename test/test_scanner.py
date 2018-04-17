@@ -9,6 +9,9 @@ def test_consistency():
     ss.set_num_rings(34)
     assert ss.get_num_axial_crystals_per_block() * ss.get_num_axial_blocks() != ss.get_num_rings()
     assert not scan._check_consistency(ss)
+    s = scan.Scanner.from_stir_scanner(ss)
+    with pytest.raises(ValueError):
+        s.get_stir_scanner()
 
 def test_names():
     names = scan._get_scanner_names()
