@@ -40,22 +40,8 @@ class Scanner():
 
         scanner = _get_stir_scanner_by_name('Userdefined')
 
-        scanner.set_num_rings(np.int32(self.num_rings))
-        scanner.set_num_detectors_per_ring(np.int32(self.num_dets_per_ring))
-        scanner.set_default_bin_size(np.float32(self.voxel_size_xy))
-        scanner.set_default_num_arccorrected_bins(np.int32(self.default_non_arc_cor_bins))
-        scanner.set_default_intrinsic_tilt(np.float32(self.intrinsic_tilt))
-        scanner.set_inner_ring_radius(np.float32(self.det_radius))
-        scanner.set_ring_spacing(np.float32(self.ring_spacing))
-        scanner.set_average_depth_of_interaction(np.float32(self.average_depth_of_inter))
-        scanner.set_max_num_non_arccorrected_bins(np.int32(self.max_num_non_arc_cor_bins))
-        scanner.set_num_axial_blocks_per_bucket(np.int32(self.axials_blocks_per_bucket))
-        scanner.set_num_transaxial_blocks_per_bucket(np.int32(self.trans_blocks_per_bucket))
-        scanner.set_num_axial_crystals_per_block(np.int32(self.axial_crystals_per_block))
-        scanner.set_num_transaxial_crystals_per_block(np.int32(self.trans_crystals_per_block))
-        scanner.set_num_axial_crystals_per_singles_unit(np.int32(self.axial_crystals_per_singles_unit))
-        scanner.set_num_transaxial_crystals_per_singles_unit(np.int32(self.trans_crystals_per_singles_unit))
-        scanner.set_num_detector_layers(np.int32(self.num_detector_layers))
+        for (sa, pa, ty) in ACCESSOR_MAPPING:
+            getattr(scanner, "set_"+sa)(ty(getattr(self, pa)))
 
         if _check_consistency(scanner):
             return scanner
@@ -68,26 +54,10 @@ class Scanner():
         Convert a STIR scanner to a Scanner object.
         """
         scanner = Scanner()
-        scanner.num_rings = stir_scanner.get_num_rings()
-        scanner.num_dets_per_ring = stir_scanner.get_num_detectors_per_ring()
-        scanner.voxel_size_xy = stir_scanner.get_default_bin_size()
-        scanner.default_non_arc_cor_bins = stir_scanner.get_default_num_arccorrected_bins()
-        scanner.intrinsic_tilt = stir_scanner.get_default_intrinsic_tilt()
-        scanner.det_radius = stir_scanner.get_inner_ring_radius()
-        scanner.ring_spacing = stir_scanner.get_ring_spacing()
-        scanner.average_depth_of_inter = stir_scanner.get_average_depth_of_interaction()
-        scanner.max_num_non_arc_cor_bins = stir_scanner.get_max_num_non_arccorrected_bins()
-        scanner.axials_blocks_per_bucket = stir_scanner.get_num_axial_blocks_per_bucket()
-        scanner.trans_blocks_per_bucket = stir_scanner.get_num_transaxial_blocks_per_bucket()
-        scanner.axial_crystals_per_block = stir_scanner.get_num_axial_crystals_per_block()
-        scanner.trans_crystals_per_block = stir_scanner.get_num_transaxial_crystals_per_block()
-        scanner.axial_crystals_per_singles_unit = stir_scanner.get_num_axial_crystals_per_singles_unit()
-        scanner.trans_crystals_per_singles_unit = stir_scanner.get_num_transaxial_crystals_per_singles_unit()
-        scanner.num_detector_layers = stir_scanner.get_num_detector_layers()
+        for (sa, pa, ty) in ACCESSOR_MAPPING:
+            setattr(scanner, pa, getattr(stir_scanner, "get_"+sa)())
+
         return scanner
-
-
-
 
     @classmethod
     def from_name(cls, name):
@@ -115,6 +85,26 @@ def _get_scanner_names():
     return names
 
 SCANNER_NAMES = _get_scanner_names()
+
+# a mapping between STIR and Python accessors, as well as the corresponding type
+ACCESSOR_MAPPING = [
+    ("num_rings", "num_rings", np.int32),
+    ("num_detectors_per_ring", "num_dets_per_ring", np.int32),
+    ("default_bin_size", "voxel_size_xy", np.float32),
+    ("default_num_arccorrected_bins", "default_non_arc_cor_bins", np.int32),
+    ("default_intrinsic_tilt", "intrinsic_tilt", np.float32),
+    ("inner_ring_radius", "det_radius", np.float32),
+    ("ring_spacing", "ring_spacing", np.float32),
+    ("average_depth_of_interaction", "average_depth_of_inter", np.float32),
+    ("max_num_non_arccorrected_bins", "max_num_non_arc_cor_bins", np.int32),
+    ("num_axial_blocks_per_bucket", "axials_blocks_per_bucket", np.int32),
+    ("num_transaxial_blocks_per_bucket", "trans_blocks_per_bucket", np.int32),
+    ("num_axial_crystals_per_block", "axial_crystals_per_block", np.int32),
+    ("num_transaxial_crystals_per_block", "trans_crystals_per_block", np.int32),
+    ("num_axial_crystals_per_singles_unit", "axial_crystals_per_singles_unit", np.int32),
+    ("num_transaxial_crystals_per_singles_unit", "trans_crystals_per_singles_unit", np.int32),
+    ("num_detector_layers", "num_detector_layers", np.int32),
+]
 
 class mCT(Scanner):
     # Detector x size in mm - plus the ring difference
