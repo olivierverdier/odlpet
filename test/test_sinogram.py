@@ -10,7 +10,7 @@ def get_projections(scanner):
     compression = Compression(scanner)
     compression.max_num_segments = 3
 
-    proj = compression.get_projector()
+    proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=.1))
 
     phantom = proj.domain.element(np.random.randn(*proj.domain.shape))
     projections = proj(phantom)

@@ -29,10 +29,6 @@ def test_data_codomain():
     proj = comp.get_projector(stir_proj_data_info=stir_data_info)
     # correct shape
     assert proj.range.shape == get_shape_from_proj_data(stir_data)
-    # simple check that the projector actually computes something:
-    dummy_data = proj(proj.domain.zero())
-    assert pytest.approx(dummy_data.asarray()) == proj.range.zero().asarray()
-
 
 def test_resolution_type():
     """

@@ -2,7 +2,7 @@ import pytest
 
 import numpy as np
 
-from odlpet.scanner.scanner import mCT
+from odlpet.scanner.scanner import Scanner
 from odlpet.scanner.compression import Compression
 
 import odlpet.utils.phantom
@@ -12,11 +12,11 @@ def test_purity():
     """
     The STIR projector seems to have side effects
     """
-    scanner = mCT()
-    compression = Compression(scanner)
-    compression.max_num_segments = 3
+    compression = Compression(Scanner())
+    compression.num_non_arccor_bins = 10
+    compression.num_of_views = 10
 
-    proj = compression.get_projector()
+    proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=.5))
 
     phantom = proj.domain.one()
 

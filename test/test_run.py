@@ -8,14 +8,14 @@ def test_memory_run():
     """
     scanner = mCT()
     compression = Compression(scanner)
-    proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=1))
+    proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=.1))
     with StirVerbosity(1):
         result = proj(proj.domain.one())
 
 def test_simple_run():
     scanner = mCT()
     compression = Compression(scanner)
-    proj = compression.get_projector()
+    proj = compression.get_projector(stir_domain=compression.get_stir_domain(zoom=.1))
     result = proj(proj.domain.one())
 
 # TODO: test that loading from file or memory gives the same result.
