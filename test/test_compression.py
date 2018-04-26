@@ -76,3 +76,11 @@ def test_domain_labels():
     labels = proj.domain.axis_labels
     assert labels == ('z', 'y', 'x')
 
+def test_default_scanner():
+    c = Compression()
+    c.num_of_views = 10
+    c.num_non_arccor_bins = 11
+    c.scanner.num_rings = 2
+    proj = c.get_projector()
+
+
