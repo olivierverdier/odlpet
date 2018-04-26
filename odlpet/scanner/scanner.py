@@ -1,7 +1,7 @@
 from stir import Scanner as _Scanner, Succeeded as _Succeeded
 import numpy as np
 
-class Scanner():
+class Scanner:
 
     # some reasonable default values
     num_rings = 1
