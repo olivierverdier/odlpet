@@ -1,3 +1,5 @@
+Python bindings for [STIR](http://stir.sourceforge.net/) based on [ODL](https://odlgroup.github.io/odl/).
+
 Extracted from [a stir branch of odl](https://github.com/NikEfth/odl/tree/_stir_backend) with
 
 ```sh
