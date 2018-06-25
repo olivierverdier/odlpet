@@ -44,7 +44,7 @@ class Compression:
         # If it is larger we are going to have empty cells in the sinogram
         self.num_of_views = self.scanner.num_dets_per_ring // 2
 
-        # The number of tangestial positions refers to the last sinogram
+        # The number of tangential positions refers to the last sinogram
         # coordinate which is going to be the LOS's distance from the center
         # of the FOV. Normally this would be the number of default_non_arc_bins
         self.num_non_arccor_bins = self.scanner.num_dets_per_ring // 2
