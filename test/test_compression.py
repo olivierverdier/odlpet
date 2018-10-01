@@ -84,3 +84,13 @@ def test_default_scanner():
     proj = c.get_projector()
 
 
+def test_double_adjoint():
+    """
+    The adjoint of the adjoint of the forward operator should be the adjoint.
+    """
+    c = Compression(Scanner())
+    proj = c.get_projector()
+    adjoint = proj.adjoint
+    assert proj.adjoint.adjoint.domain.shape == proj.domain.shape
+    assert proj.adjoint.adjoint.range.shape == proj.range.shape
+

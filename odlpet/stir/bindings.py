@@ -226,6 +226,12 @@ class BackProjectorByBinWrapper(Operator):
         # make ODL data
         out[:] = res
 
+    @property
+    def adjoint(self):
+        """Back-projector associated with this operator."""
+        return self._adjoint
+
+
 def call_with_stir_buffer(function, b_in, b_out, v_in, clear_buffer=False):
     b_in.fill(v_in.asarray().flat)
     if clear_buffer:
