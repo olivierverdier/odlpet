@@ -94,3 +94,11 @@ def test_double_adjoint():
     assert proj.adjoint.adjoint.domain.shape == proj.domain.shape
     assert proj.adjoint.adjoint.range.shape == proj.range.shape
 
+
+def test_restrict_fov():
+    c = Compression(Scanner())
+    proj = c.get_projector(restrict_to_cylindrical_FOV=False)
+    adjoin = proj.adjoint
+    sensitivity = proj.adjoint(proj.range.one())
+    corner = sensitivity[0,1,-1]
+    assert corner > 1. # should be about 8

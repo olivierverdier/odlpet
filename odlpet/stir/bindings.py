@@ -49,6 +49,7 @@ class ForwardProjectorByBinWrapper(Operator):
 
     def __init__(self, domain, range, volume, proj_data,
                  _proj_info=None,
+                 restrict_to_cylindrical_FOV=True,
                  projector=None, adjoint=None):
         """Initialize a new instance.
 
@@ -99,6 +100,8 @@ class ForwardProjectorByBinWrapper(Operator):
             self.proj_matrix.set_num_tangential_LORs(np.int32(1))
 
             self.proj_matrix.set_up(self.proj_data_info, self.volume)
+
+            self.proj_matrix.set_restrict_to_cylindrical_FOV(restrict_to_cylindrical_FOV)
 
 
             self.projector = ForwardProjectorByBinUsingProjMatrixByBin(self.proj_matrix)
