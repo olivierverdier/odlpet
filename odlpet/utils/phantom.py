@@ -11,9 +11,10 @@ def cylinders_from_ellipses(ellipses):
     ellipsoids[:, 1] = 100000.0
     return ellipsoids
 
-def derenzo(space):
+def derenzo(space, *args, **kwargs):
     vol = odl.phantom.ellipsoid_phantom(
         space,
-        cylinders_from_ellipses(odl.phantom.emission._derenzo_sources_2d()))
+        cylinders_from_ellipses(odl.phantom.emission._derenzo_sources_2d()),
+        *args, **kwargs)
     return vol
 
