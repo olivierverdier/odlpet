@@ -9,7 +9,11 @@ setup(
     version      = '0.1',
     description  = 'ODL Pet',
     author = 'Olivier Verdier',
-    packages=['odlpet',],
+    packages=['odlpet',
+              'odlpet.scanner',
+              'odlpet.stir',
+              'odlpet.utils',
+    ],
     classifiers = [
     'Development Status :: 4 - Beta',
     'Intended Audience :: Science/Research',
