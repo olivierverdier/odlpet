@@ -49,6 +49,7 @@ class ForwardProjectorByBinWrapper(Operator):
 
     def __init__(self, domain, range, volume, proj_data,
                  _proj_info=None,
+                 subset_num=0, num_subsets=1,
                  restrict_to_cylindrical_FOV=True,
                  projector=None, adjoint=None):
         """Initialize a new instance.
@@ -81,6 +82,9 @@ class ForwardProjectorByBinWrapper(Operator):
 
         # Set domain, range etc
         super().__init__(domain, range, linear=True)
+
+        self.num_subsets = num_subsets
+        self.subset_num = subset_num
 
         # Read template of the projection
         self.proj_data = proj_data
@@ -125,7 +129,8 @@ class ForwardProjectorByBinWrapper(Operator):
         if adjoint is None:
             self._adjoint = BackProjectorByBinWrapper(
                 self.range, self.domain, self.volume, self.proj_data,
-                back_projector, self)
+                subset_num=subset_num, num_subsets=num_subsets,
+                back_projector=back_projector, adjoint=self)
         else:
             self._adjoint = adjoint
 
@@ -135,7 +140,9 @@ class ForwardProjectorByBinWrapper(Operator):
         self.volume.fill(volume.asarray().flat)
 
         # project
-        res = call_with_stir_buffer(self.projector.forward_project, self.volume, self.proj_data, volume)
+        res = call_with_stir_buffer(
+            self.projector.forward_project, self.volume, self.proj_data, volume,
+            self.subset_num, self.num_subsets)
 
         # make ODL data
         out[:] = res
@@ -151,6 +158,7 @@ class BackProjectorByBinWrapper(Operator):
     """A back projector using STIR."""
 
     def __init__(self, domain, range, volume, proj_data,
+                 subset_num=0, num_subsets=1,
                  back_projector=None, adjoint=None):
         """Initialize a new instance.
 
@@ -191,6 +199,9 @@ class BackProjectorByBinWrapper(Operator):
         # Set range domain
         super().__init__(domain, range, True)
 
+        self.num_subsets = num_subsets
+        self.subset_num = subset_num
+
         # Read template of the projection
         self.proj_data = proj_data
         self.proj_data_info = proj_data.get_proj_data_info()
@@ -224,7 +235,10 @@ class BackProjectorByBinWrapper(Operator):
 
     def _call(self, projections, out):
         """Back project."""
-        res = call_with_stir_buffer(self.back_projector.back_project, self.proj_data, self.volume, projections, clear_buffer=True)
+        res = call_with_stir_buffer(
+            self.back_projector.back_project, self.proj_data, self.volume, projections,
+            self.subset_num, self.num_subsets,
+            clear_buffer=True)
 
         # make ODL data
         out[:] = res
@@ -235,10 +249,10 @@ class BackProjectorByBinWrapper(Operator):
         return self._adjoint
 
 
-def call_with_stir_buffer(function, b_in, b_out, v_in, clear_buffer=False):
+def call_with_stir_buffer(function, b_in, b_out, v_in, subset_num=0, num_subsets=1, clear_buffer=False):
     b_in.fill(v_in.asarray().flat)
     if clear_buffer:
         b_out.fill(0)
-    function(b_out, b_in)
+    function(b_out, b_in, subset_num, num_subsets)
     return to_numpy(b_out)
 

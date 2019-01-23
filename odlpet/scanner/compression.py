@@ -126,7 +126,9 @@ class Compression:
         return get_offset(segment, axial, info)
 
 
-    def get_projector(self, stir_domain=None, stir_proj_data_info=None, restrict_to_cylindrical_FOV=True):
+    def get_projector(self, stir_domain=None, stir_proj_data_info=None,
+                      subset_num=0, num_subsets=1,
+                      restrict_to_cylindrical_FOV=True):
         if stir_domain is None:
             stir_domain = self.get_stir_domain()
 
@@ -135,7 +137,11 @@ class Compression:
         recon_sp = space_from_stir_domain(stir_domain)
         data_sp = get_range_from_proj_data(stir_proj_data, radius=self.scanner.det_radius)
 
-        return ForwardProjectorByBinWrapper(recon_sp, data_sp, stir_domain, stir_proj_data, restrict_to_cylindrical_FOV=restrict_to_cylindrical_FOV)
+        return ForwardProjectorByBinWrapper(
+            recon_sp, data_sp,
+            stir_domain, stir_proj_data,
+            subset_num=subset_num, num_subsets=num_subsets,
+            restrict_to_cylindrical_FOV=restrict_to_cylindrical_FOV)
 
     def get_default_num_tangential(self):
         if self.data_arc_corrected:
