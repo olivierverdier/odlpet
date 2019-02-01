@@ -1,8 +1,9 @@
 import numpy as np
 from ..stir.space import space_from_stir_domain
-from ..stir.bindings import ForwardProjectorByBinWrapper
+from ..stir.bindings import ForwardProjectorByBinWrapper, get_view_mask
 from .sinogram import get_offset, get_range_from_proj_data
 from .scanner import Scanner
+from ..utils.slicing import SlicingProjectionOperator
 
 from stir import (FloatCartesianCoordinate3D,
                   IntCartesianCoordinate3D,
@@ -142,6 +143,14 @@ class Compression:
             stir_domain, stir_proj_data,
             subset_num=subset_num, num_subsets=num_subsets,
             restrict_to_cylindrical_FOV=restrict_to_cylindrical_FOV)
+
+    def get_projectors(self, num_subsets=1,
+                       stir_domain=None, stir_proj_data_info=None,
+                       restrict_to_cylindrical_FOV=True):
+        projs = [self.get_projector(stir_domain, stir_proj_data_info, i, num_subsets, restrict_to_cylindrical_FOV) for i in range(num_subsets)]
+        masks = [get_view_mask(proj) for proj in projs]
+        slice_ops = [SlicingProjectionOperator(proj.range, slicing=(slice(None), mask, slice(None))) for (proj,mask) in zip(projs, masks)]
+        return projs, slice_ops
 
     def get_default_num_tangential(self):
         if self.data_arc_corrected:

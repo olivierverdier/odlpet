@@ -256,3 +256,12 @@ def call_with_stir_buffer(function, b_in, b_out, v_in, subset_num=0, num_subsets
     function(b_out, b_in, subset_num, num_subsets)
     return to_numpy(b_out)
 
+def get_view_mask(forward_operator):
+    """
+    Return the view mask for a partial (view-subsampled) forward operator.
+    """
+    data = forward_operator(forward_operator.domain.one())
+    nb_tan = data.shape[-1]
+    mask = np.asarray(data[0,:,nb_tan//2]) > 0
+    return mask
+

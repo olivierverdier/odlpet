@@ -1,9 +1,11 @@
 from odlpet.scanner.scanner import mCT, Scanner
 from odlpet.scanner.compression import Compression
 from odlpet.scanner.sinogram import get_shape_from_proj_data
+import odl
 import stir
 import pytest
 import numpy as np
+import numpy.testing as nt
 
 def test_domain():
     from odlpet.stir.space import space_from_stir_domain
@@ -102,3 +104,15 @@ def test_restrict_fov():
     sensitivity = proj.adjoint(proj.range.one())
     corner = sensitivity[0,1,-1]
     assert corner > 1. # should be about 8
+
+def test_projectors():
+    c = Compression(Scanner())
+    c.num_non_arccor_bins = 32
+    projs, sprojs = c.get_projectors(num_subsets=4)
+    proj = c.get_projector()
+    x = proj.domain.one() + odl.phantom.uniform_noise(proj.domain)
+    full_data = proj(x)
+    reco_data = sum(proj(x) for proj in projs)
+    nt.assert_allclose(full_data, reco_data)
+
+
