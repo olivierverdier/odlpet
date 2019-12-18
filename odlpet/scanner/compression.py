@@ -55,6 +55,8 @@ class Compression:
         # to know.
         self.data_arc_corrected = False
 
+        self.max_diff_ring = self.get_default_max_diff_ring()
+
     @classmethod
     def from_stir_proj_data_info(cls, proj_data_info):
         """
@@ -169,19 +171,12 @@ class Compression:
     def get_default_max_diff_ring(self):
         return self.scanner.num_rings - 1
 
-    def get_max_ring_diff(self):
-        # TODO: add this in initialisation method
-        if self.max_num_segments is None:
-            return self.get_default_max_diff_ring()
-        else:
-            return self.max_num_segments
-
     def get_stir_proj_data_info(self):
         _stir_scanner = self.scanner.get_stir_scanner()
         proj_data_info = ProjDataInfo.ProjDataInfoCTI(
             _stir_scanner,
             self.span_num,
-            self.get_max_ring_diff(),
+            self.max_diff_ring,
             self.num_of_views,
             self.get_num_tangential(),
             self.data_arc_corrected)
