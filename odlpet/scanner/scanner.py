@@ -71,8 +71,8 @@ def _get_stir_scanner_by_name(name):
     """
     Get a STIR scanner by name.
     """
-    if name not in SCANNER_NAMES:
-        raise ValueError("No default scanner of name {}".format(name))
+    # if name not in SCANNER_NAMES:
+        # raise ValueError("No default scanner of name {}".format(name))
     stir_scanner = _Scanner.get_scanner_from_name(name)
     return stir_scanner
 
@@ -92,7 +92,7 @@ ACCESSOR_MAPPING = [
     ("num_detectors_per_ring", "num_dets_per_ring", np.int32),
     ("default_bin_size", "voxel_size_xy", np.float32),
     ("default_num_arccorrected_bins", "default_non_arc_cor_bins", np.int32),
-    ("default_intrinsic_tilt", "intrinsic_tilt", np.float32),
+    ("intrinsic_azimuthal_tilt", "intrinsic_tilt", np.float32),
     ("inner_ring_radius", "det_radius", np.float32),
     ("ring_spacing", "ring_spacing", np.float32),
     ("average_depth_of_interaction", "average_depth_of_inter", np.float32),

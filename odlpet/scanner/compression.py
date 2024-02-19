@@ -55,6 +55,8 @@ class Compression:
         # to know.
         self.data_arc_corrected = False
 
+        self.tof_mash_factor = 0
+
         self.max_diff_ring = self.get_default_max_diff_ring()
 
     @classmethod
@@ -173,13 +175,14 @@ class Compression:
 
     def get_stir_proj_data_info(self):
         _stir_scanner = self.scanner.get_stir_scanner()
-        proj_data_info = ProjDataInfo.ProjDataInfoCTI(
+        proj_data_info = ProjDataInfo.construct_proj_data_info(
             _stir_scanner,
             self.span_num,
             self.max_diff_ring,
             self.num_of_views,
             self.get_num_tangential(),
-            self.data_arc_corrected)
+            self.data_arc_corrected,
+            self.tof_mash_factor)
         return proj_data_info
 
 

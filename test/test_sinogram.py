@@ -57,7 +57,7 @@ def test_wrong_sinogram():
 
 def test_shape():
     s = stir.Scanner.get_scanner_from_name("ECAT 962")
-    projdatainfo = stir.ProjDataInfo.ProjDataInfoCTI(s,3,9,8,6)
+    projdatainfo = stir.ProjDataInfo.construct_proj_data_info(s,3,9,8,6)
     projdata = stir.ProjDataInMemory(stir.ExamInfo(), projdatainfo)
     shape = get_shape_from_proj_data(projdata)
     assert shape == projdata.to_array().shape()

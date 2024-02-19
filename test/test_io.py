@@ -15,7 +15,7 @@ def test_load():
     volume_file = base / 'initial.hv'
     vol = volume_from_file(volume_file.as_posix())
     stir_vol = stir.FloatVoxelsOnCartesianGrid.read_from_file(volume_file.as_posix())
-    assert pytest.approx(vol.asarray(), stirextra.to_numpy(stir_vol))
+    assert vol.asarray() == pytest.approx(stirextra.to_numpy(stir_vol))
 
 
 def _projector_from_file(volume_file, projection_file):
